@@ -1,0 +1,534 @@
+generator client {
+  provider = "prisma-client-js" 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//============--- ENUMS ---===================
+
+enum RoleName {
+  admin
+  client
+  seller
+  provider
+  storekeeper
+}
+
+enum ActionMethod {
+	get
+	post
+	put
+	patch
+	delete
+}
+
+
+enum PaymentMethod {
+	cash_with_receipt // Наличный с чеком
+	cash_without_receipt // Наличный без чека
+	card_payme // С карты PayMe
+	card_uzum // С карты Uzum
+	card_anor // С карты Anor
+	card_solfy // С карты Solfy
+	card_zoodpay // С карты ZoodPay
+	card_to_card // С карты на карту
+	transfer // Перечисление
+	terminal // Терминал
+}
+
+enum PaymentCurrency {
+	uzs
+	usd
+}
+
+enum ClientPStatus {
+	first
+	next
+}
+
+enum OrderProductType {
+	standart
+	nonstandart
+}
+
+enum ProductDirection {
+	right
+	left
+	none
+}
+
+enum OrderProductStatus {
+	new // ns product default state
+	accepted // if ns product accepted by provider
+	cancelled // if all type cancelled
+	sold //sps product default state
+	loaded // if all type loaded
+	received // if all type received
+}
+
+
+enum StorehouseType {
+	warehouse
+	showroom
+}
+
+enum InventoryStatus {
+	new
+	cancelled
+	accepted
+}
+
+enum ProductMVType {
+	selling
+	purchase
+	transfer
+}
+
+enum ProductType {
+  standart
+  nonstandart
+}
+
+enum SPStatus {
+  pending
+  active
+  defected
+}
+
+enum ProductMVStatus {
+  active
+  defected
+}
+
+//============--- TABLES ---===================
+
+model User {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  phone     String   @map("phone")     @db.VarChar()
+  token     String?  @map("token")     @db.VarChar()
+  source    String   @map("source")    @db.VarChar()          @default("")  
+  balance   Decimal  @map("balance")   @db.Decimal(10,3)      @default(0)
+  fullname  String   @map("fullname")  @db.VarChar()
+  password  String   @map("password")  @db.VarChar()
+  
+  actions  Action[]
+  roles    Role[]
+  models   Model[]
+
+  carts          Cart[]
+  orderProducts  OrderProduct[]
+  
+  soldToMe  Order[]  @relation(name: "ClientOrder")
+  soldByMe  Order[]  @relation(name: "SellerOrder")
+
+  storehouse    ProviderStorehouse?
+
+  sellings      Selling[]
+  ppurchases    Purchase[]  @relation(name: "ProviderPurchase")
+  spurchases    Purchase[]  @relation(name: "StorekeeperPurchase")
+  inTransfers   Transfer[]  @relation(name: "to")
+  outTransfers  Transfer[]  @relation(name: "from")
+
+  @@id([ id ])
+  @@map("user")
+}
+
+model ProviderStorehouse {
+
+  providerId    String  @map("provider_id")    @db.Uuid  @unique
+  storehouseId  String  @map("storehouse_id")  @db.Uuid
+
+  provider    User        @relation(fields: [ providerId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storehouse  Storehouse  @relation(fields: [ storehouseId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  
+  @@unique([ providerId, storehouseId ])
+  @@map("provider_storehouse")
+}
+
+model Action {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  url          String        @map("url")          @db.VarChar()
+  name         String        @map("name")         @db.VarChar()
+  method       ActionMethod  @map("method")
+  description  String        @map("description")  @db.VarChar()  @default("")
+
+  users  User[]
+  roles  Role[]
+
+  @@id([ id ])
+  @@unique([ url, name, method ])
+  @@map("action")
+}
+
+model Role {
+  name  RoleName  @map("name")  @unique
+
+  users    User[]
+  actions  Action[]
+
+  @@id([ name ])
+  @@map("role")
+}
+
+model FurnitureType {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  name  String  @map("name")  @db.VarChar()
+
+  models  Model[]
+
+  @@id([ id ])
+  @@map("furniture_type")
+}
+
+model PublicId {
+  id         String    @map("id")          @db.VarChar()    @id @unique
+  createdAt  DateTime  @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+
+  @@index([ id ])
+  @@map("public_id")
+}
+
+model Model {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  name             String  @map("name")               @db.VarChar()
+  providerId       String  @map("provider_id")        @db.Uuid
+  furnitureTypeId  String  @map("furniture_type_id")  @db.Uuid
+
+  provider       User           @relation(fields: [ providerId      ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  furnitureType  FurnitureType  @relation(fields: [ furnitureTypeId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  products    Product[]
+
+  @@id([ id ])
+  @@map("model")
+}
+
+model Payment {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  sum          Decimal          @map("sum")          @db.Decimal(10,3)  @default(0)
+  exchangeRate Decimal          @map("exchange_rate")@db.Decimal(10,3)  @default(1)
+  method       PaymentMethod    @map("method")
+  fromCurrency PaymentCurrency  @map("from_c")                          @default(uzs)
+  toCurrency   PaymentCurrency  @map("to_c")                            @default(uzs)
+  totalSum     Decimal          @map("total_sum")    @db.Decimal(10,3)  @default(0)
+  description  String           @map("description")  @db.VarChar()      @default("")
+  orderId      String           @map("order_id")     @db.Uuid
+
+  order  Order  @relation(fields: [ orderId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@map("payment")
+}
+
+model Product {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  type         ProductType       @map("type")                        @default(standart)
+  publicId     String            @map("public_id")    @db.VarChar()
+  modelId      String            @map("model_id")     @db.Uuid
+  tissue       String            @map("tissue")       @db.VarChar() 
+  quantity     Int               @map("quantity")     @db.Integer    @default(1)
+  direction    ProductDirection  @map("direction")
+  description  String            @map("description")  @db.VarChar()  @default("")
+
+  model  Model  @relation(fields: [ modelId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  productMVs  ProductMV[]
+  SPs         SP[]
+
+  @@id([ id ])
+  @@map("product")
+}
+
+model Order {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  clientId         String         @map("client_id")         @db.Uuid
+  sellerId         String         @map("seller_id")         @db.Uuid
+  deliveryDate     DateTime       @map("delivery_date")     @db.Timestamptz()
+  deliveryAddress  String         @map("delivery_address")  @db.VarChar()
+  clientPStatus    ClientPStatus
+  status           InventoryStatus                           @default(new)
+
+
+  seller  User  @relation(name: "SellerOrder", fields: [ sellerId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  client  User  @relation(name: "ClientOrder", fields: [ clientId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  payments  Payment[]
+  products  OrderProduct[]
+  selling   Selling?  
+
+  @@id([ id ])
+  @@map("order")
+}
+
+model Cart {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  type           OrderProductType  @map("order_product_type")
+  spsId          String            @map("sps_id")             @db.Uuid
+
+  sale           Int               @map("sale")               @db.Integer        @default(0)
+  quantity       Int               @map("quantity")           @db.Integer        @default(1)
+  price          Decimal           @map("price")              @db.Decimal(10,3)  @default(0)
+  totalSum       Decimal           @map("total_sum")          @db.Decimal(10,3)  @default(0)
+  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(10,3)  @default(0)
+  description    String            @map("description")        @db.VarChar()      @default("")
+  sellerId       String            @map("seller_id")          @db.Uuid
+
+  sps     SPS   @relation(fields: [ spsId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  seller  User  @relation(fields: [ sellerId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@map("cart")
+}
+
+model OrderProduct {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  type           OrderProductType  @map("order_product_type")
+  spsId          String            @map("sps_id")             @db.Uuid
+
+  quantity       Int               @map("quantity")           @db.Integer        @default(1)
+  sale           Int               @map("sale")               @db.Integer        @default(0)
+  totalSum       Decimal           @map("total_sum")          @db.Decimal(10,3)  @default(0)
+  price          Decimal           @map("price")              @db.Decimal(10,3)  @default(0)
+  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(10,3)  @default(0)
+  description    String            @map("description")        @db.VarChar()      @default("")
+  sellerId       String            @map("seller_id")          @db.Uuid
+  orderId        String            @map("order_id")           @db.Uuid
+  status         OrderProductStatus                                              @default(new)
+
+  order   Order  @relation(fields: [ orderId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  sps     SPS    @relation(fields: [ spsId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  seller  User   @relation(fields: [ sellerId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@map("order_product")
+}
+
+//============================================================================================================================
+
+model Storehouse {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  name  String          @map("name")  @db.VarChar()
+  type  StorehouseType  
+
+  sellings   Selling[]
+  purchases  Purchase[]
+  
+  provider  ProviderStorehouse[]
+
+  inTransfers   Transfer[]  @relation(name: "to")
+  outTransfers  Transfer[]  @relation(name: "from")
+
+  products  SP[]
+
+  @@id([ id ])
+  @@map("storehouse")
+}
+
+
+model SP {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  productId     String  @map("product_id")     @db.Uuid
+  storehouseId  String  @map("storehouse_id")  @db.Uuid
+  
+  product     Product     @relation(fields: [ productId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storehouse  Storehouse  @relation(fields: [ storehouseId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  statuses  SPS[]
+
+  @@id([ id ])
+  @@map("sp")
+}
+
+model SPS {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  status    SPStatus  @map("status")                 @default(active)
+  quantity  Int       @map("quantity")  @db.Integer  @default(1)
+  spId      String    @map("sp_id")     @db.Uuid
+
+  sp  SP  @relation(fields: [ spId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  bookings       SPSBooking[]
+  carts          Cart[]
+  orderProducts  OrderProduct[]
+
+  @@id([ id ])
+  @@map("sps")
+}
+
+model SPSBooking {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  sellerId  String  @map("seller_id")  @db.VarChar()
+  quantity  Int     @map("quantity")   @db.Integer    @default(1)
+  spsId     String  @map("sps_id")     @db.Uuid
+
+  sps  SPS  @relation(fields: [ spsId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@map("sps_booking")
+}
+
+//============================================================================================================================
+
+model Selling {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  storekeeperId  String?  @map("storekeeper_id")  @db.Uuid
+  storehouseId   String   @map("storehouse_id")   @db.Uuid
+  status         InventoryStatus                             @default(new)
+  orderId        String   @map("order_id")        @db.Uuid   @unique
+
+  storekeeper  User?       @relation(fields: [ storekeeperId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storehouse   Storehouse  @relation(fields: [ storehouseId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  order        Order       @relation(fields: [ orderId       ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  productMVs  ProductMV[]
+
+  @@id([ id ])
+  @@map("selling")
+}
+
+model Purchase {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  providerId     String  @map("provider_id")     @db.Uuid
+  storekeeperId  String  @map("storekeeper_id")  @db.Uuid
+  storehouseId   String  @map("storehouse_id")   @db.Uuid
+  status         InventoryStatus                             @default(new)
+
+  provider     User        @relation(name: "ProviderPurchase",    fields: [ providerId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storekeeper  User        @relation(name: "StorekeeperPurchase", fields: [ storekeeperId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  storehouse   Storehouse  @relation(                             fields: [ storehouseId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  productMVs  ProductMV[]
+
+  @@id([ id ])
+  @@map("purchase")
+}
+
+model Transfer {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  toStorekeeperId    String? @map("to_storekeeper_id")    @db.Uuid
+  toStorehouseId     String  @map("to_storehouse_id")     @db.Uuid
+  fromStorekeeperId  String  @map("from_storekeeper_id")  @db.Uuid
+  fromStorehouseId   String  @map("from_storehouse_id")   @db.Uuid
+  status             InventoryStatus                         @default(new)
+
+  toStorekeeper    User?       @relation(name: "to",   fields: [ toStorekeeperId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  toStorehouse     Storehouse  @relation(name: "to",   fields: [ toStorehouseId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  fromStorekeeper  User        @relation(name: "from", fields: [ fromStorekeeperId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  fromStorehouse   Storehouse  @relation(name: "from", fields: [ fromStorehouseId  ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  productMVs  ProductMV[]
+
+  @@id([ id ])
+  @@map("transfer")
+}
+
+model ProductMV {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  type          ProductMVType
+  productId     String        @map("product_id")      @db.Uuid
+  
+  sellingId     String?       @map("selling_id")      @db.Uuid
+  purchaseId    String?       @map("purchase_id")     @db.Uuid
+  transferId    String?       @map("transfer_id")     @db.Uuid
+  
+  product     Product      @relation(fields: [ productId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+ 
+  selling     Selling?     @relation(fields: [ sellingId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  purchase    Purchase?    @relation(fields: [ purchaseId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  transfer    Transfer?    @relation(fields: [ transferId   ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  statuses  ProductStatusMV[]
+
+  @@id([ id ])
+  @@map("product_mv")
+}
+
+model ProductStatusMV {
+  id         String     @map("id")          @db.Uuid         @default(dbgenerated("GEN_RANDOM_UUID()"))
+  createdAt  DateTime   @map("created_at")  @db.Timestamptz  @default(dbgenerated("NOW()"))
+  updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
+  deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
+
+  status       ProductMVStatus  @map("status")                        @default(active)
+  quantity     Int              @map("quantity")       @db.Integer    @default(1)
+  productMVId  String           @map("product_mv_id")  @db.Uuid
+  isAccepted   Boolean          @map("is_accepted")    @db.Boolean    @default(false)
+
+  productMV  ProductMV  @relation(fields: [ productMVId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([ id ])
+  @@map("product_status_mv")
+}
+
+

@@ -1,0 +1,6 @@
+export * from './storehouse-product.controller'
+export * from './storehouse-product.module'
+export * from './storehouse-product.repository'
+export * from './storehouse-product.service'
+export * from './dtos'
+export * from './interfaces'
