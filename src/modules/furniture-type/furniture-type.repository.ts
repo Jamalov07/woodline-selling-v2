@@ -37,14 +37,14 @@ export class FurnitureTypeRepository {
 	}
 
 	async findOne(query: FurnitureTypeFindOneRequest) {
-		const staff = await this.prisma.furnitureType.findFirst({
+		const furnitureType = await this.prisma.furnitureType.findFirst({
 			where: {
 				id: query.id,
 			},
 			select: { id: true, name: true, createdAt: true },
 		})
 
-		return staff
+		return furnitureType
 	}
 
 	async countFindMany(query: FurnitureTypeFindManyRequest) {
@@ -77,14 +77,14 @@ export class FurnitureTypeRepository {
 	}
 
 	async getOne(query: FurnitureTypeGetOneRequest) {
-		const staff = await this.prisma.furnitureType.findFirst({
+		const furnitureType = await this.prisma.furnitureType.findFirst({
 			where: {
 				id: query.id,
 				name: query.name,
 			},
 		})
 
-		return staff
+		return furnitureType
 	}
 
 	async countGetMany(query: FurnitureTypeGetManyRequest) {

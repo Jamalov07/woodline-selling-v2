@@ -22,8 +22,8 @@ export class ProductStatusMVController {
 	@AuthOptions(true, true)
 	@ApiOkResponse({ type: ProductStatusMVFindManyResponseDto })
 	@ApiOperation({ summary: 'get all storehouse product statuss' })
-	async findMany(@Req() request: CRequest, @Query() query: ProductStatusMVFindManyRequestDto): Promise<ProductStatusMVFindManyResponseDto> {
-		return this.productStatusMVService.findMany(request, query)
+	async findMany(@Query() query: ProductStatusMVFindManyRequestDto): Promise<ProductStatusMVFindManyResponseDto> {
+		return this.productStatusMVService.findMany(query)
 	}
 
 	@Get('one')

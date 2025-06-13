@@ -41,7 +41,7 @@ export class SellingRepository {
 	}
 
 	async findOne(query: SellingFindOneRequest) {
-		const staff = await this.prisma.selling.findFirst({
+		const selling = await this.prisma.selling.findFirst({
 			where: {
 				id: query.id,
 			},
@@ -52,7 +52,7 @@ export class SellingRepository {
 			},
 		})
 
-		return staff
+		return selling
 	}
 
 	async countFindMany(query: SellingFindManyRequest) {
@@ -85,7 +85,7 @@ export class SellingRepository {
 	}
 
 	async getOne(query: SellingGetOneRequest) {
-		const staff = await this.prisma.selling.findFirst({
+		const selling = await this.prisma.selling.findFirst({
 			where: {
 				id: query.id,
 				isAccepted: query.isAccepted,
@@ -99,7 +99,7 @@ export class SellingRepository {
 			},
 		})
 
-		return staff
+		return selling
 	}
 
 	async countGetMany(query: SellingGetManyRequest) {

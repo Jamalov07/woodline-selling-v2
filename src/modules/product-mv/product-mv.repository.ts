@@ -28,7 +28,6 @@ export class ProductMVRepository {
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				productId: query.productId,
-				sellingId: query.sellingId,
 				transferId: query.transferId,
 				purchaseId: query.purchaseId,
 				type: query.type,
@@ -41,13 +40,13 @@ export class ProductMVRepository {
 	}
 
 	async findOne(query: ProductMVFindOneRequest) {
-		const staff = await this.prisma.productMV.findFirst({
+		const productMV = await this.prisma.productMV.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return productMV
 	}
 
 	async countFindMany(query: ProductMVFindManyRequest) {
@@ -55,7 +54,6 @@ export class ProductMVRepository {
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				productId: query.productId,
-				sellingId: query.sellingId,
 				transferId: query.transferId,
 				purchaseId: query.purchaseId,
 				type: query.type,
@@ -75,7 +73,6 @@ export class ProductMVRepository {
 			where: {
 				id: { in: query.ids },
 				deletedAt: deletedAtConverter(query.isDeleted),
-				sellingId: query.sellingId,
 			},
 			...paginationOptions,
 		})
@@ -84,14 +81,13 @@ export class ProductMVRepository {
 	}
 
 	async getOne(query: ProductMVGetOneRequest) {
-		const staff = await this.prisma.productMV.findFirst({
+		const productMV = await this.prisma.productMV.findFirst({
 			where: {
 				id: query.id,
-				sellingId: query.sellingId,
 			},
 		})
 
-		return staff
+		return productMV
 	}
 
 	async countGetMany(query: ProductMVGetManyRequest) {
@@ -99,7 +95,6 @@ export class ProductMVRepository {
 			where: {
 				id: { in: query.ids },
 				deletedAt: deletedAtConverter(query.isDeleted),
-				sellingId: query.sellingId,
 			},
 		})
 
@@ -109,7 +104,6 @@ export class ProductMVRepository {
 	async createOne(body: ProductMVCreateOneRequest) {
 		const productMV = await this.prisma.productMV.create({
 			data: {
-				sellingId: body.sellingId,
 				productId: body.productId,
 				type: body.type,
 				purchaseId: body.purchaseId,
@@ -123,7 +117,6 @@ export class ProductMVRepository {
 		const productMV = await this.prisma.productMV.update({
 			where: { id: query.id },
 			data: {
-				sellingId: body.sellingId,
 				productId: body.productId,
 				type: body.type,
 				purchaseId: body.purchaseId,

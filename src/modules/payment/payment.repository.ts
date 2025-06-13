@@ -37,13 +37,13 @@ export class PaymentRepository {
 	}
 
 	async findOne(query: PaymentFindOneRequest) {
-		const staff = await this.prisma.payment.findFirst({
+		const payment = await this.prisma.payment.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return payment
 	}
 
 	async countFindMany(query: PaymentFindManyRequest) {
@@ -76,14 +76,14 @@ export class PaymentRepository {
 	}
 
 	async getOne(query: PaymentGetOneRequest) {
-		const staff = await this.prisma.payment.findFirst({
+		const payment = await this.prisma.payment.findFirst({
 			where: {
 				id: query.id,
 				description: query.description,
 			},
 		})
 
-		return staff
+		return payment
 	}
 
 	async countGetMany(query: PaymentGetManyRequest) {

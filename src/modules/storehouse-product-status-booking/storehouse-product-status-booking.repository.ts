@@ -37,13 +37,13 @@ export class SPSBookingRepository {
 	}
 
 	async findOne(query: SPSBookingFindOneRequest) {
-		const staff = await this.prisma.sPSBooking.findFirst({
+		const spsBooking = await this.prisma.sPSBooking.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return spsBooking
 	}
 
 	async countFindMany(query: SPSBookingFindManyRequest) {
@@ -77,14 +77,14 @@ export class SPSBookingRepository {
 	}
 
 	async getOne(query: SPSBookingGetOneRequest) {
-		const staff = await this.prisma.sPSBooking.findFirst({
+		const spsBooking = await this.prisma.sPSBooking.findFirst({
 			where: {
 				id: query.id,
 				sellerId: query.sellerId,
 			},
 		})
 
-		return staff
+		return spsBooking
 	}
 
 	async countGetMany(query: SPSBookingGetManyRequest) {

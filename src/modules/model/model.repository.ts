@@ -43,7 +43,7 @@ export class ModelRepository {
 	}
 
 	async findOne(query: ModelFindOneRequest) {
-		const staff = await this.prisma.model.findFirst({
+		const model = await this.prisma.model.findFirst({
 			where: {
 				id: query.id,
 			},
@@ -56,7 +56,7 @@ export class ModelRepository {
 			},
 		})
 
-		return staff
+		return model
 	}
 
 	async countFindMany(query: ModelFindManyRequest) {
@@ -89,14 +89,14 @@ export class ModelRepository {
 	}
 
 	async getOne(query: ModelGetOneRequest) {
-		const staff = await this.prisma.model.findFirst({
+		const model = await this.prisma.model.findFirst({
 			where: {
 				id: query.id,
 				name: query.name,
 			},
 		})
 
-		return staff
+		return model
 	}
 
 	async countGetMany(query: ModelFindManyRequest) {

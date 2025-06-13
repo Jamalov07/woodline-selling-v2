@@ -37,13 +37,13 @@ export class ProductStatusMVRepository {
 	}
 
 	async findOne(query: ProductStatusMVFindOneRequest) {
-		const staff = await this.prisma.productStatusMV.findFirst({
+		const productStatusMV = await this.prisma.productStatusMV.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return productStatusMV
 	}
 
 	async countFindMany(query: ProductStatusMVFindManyRequest) {
@@ -77,14 +77,14 @@ export class ProductStatusMVRepository {
 	}
 
 	async getOne(query: ProductStatusMVGetOneRequest) {
-		const staff = await this.prisma.productStatusMV.findFirst({
+		const productStatusMV = await this.prisma.productStatusMV.findFirst({
 			where: {
 				id: query.id,
 				status: query.status,
 			},
 		})
 
-		return staff
+		return productStatusMV
 	}
 
 	async countGetMany(query: ProductStatusMVGetManyRequest) {
@@ -117,7 +117,6 @@ export class ProductStatusMVRepository {
 				status: body.status,
 				productMVId: body.productMVId,
 				quantity: body.quantity,
-				isAccepted: body.isAccepted,
 				deletedAt: body.deletedAt,
 			},
 		})

@@ -41,7 +41,7 @@ export class TransferRepository {
 	}
 
 	async findOne(query: TransferFindOneRequest) {
-		const staff = await this.prisma.transfer.findFirst({
+		const transfer = await this.prisma.transfer.findFirst({
 			where: {
 				id: query.id,
 			},
@@ -52,7 +52,7 @@ export class TransferRepository {
 			},
 		})
 
-		return staff
+		return transfer
 	}
 
 	async countFindMany(query: TransferFindManyRequest) {
@@ -85,14 +85,14 @@ export class TransferRepository {
 	}
 
 	async getOne(query: TransferGetOneRequest) {
-		const staff = await this.prisma.transfer.findFirst({
+		const transfer = await this.prisma.transfer.findFirst({
 			where: {
 				id: query.id,
 				status: query.status,
 			},
 		})
 
-		return staff
+		return transfer
 	}
 
 	async countGetMany(query: TransferGetManyRequest) {

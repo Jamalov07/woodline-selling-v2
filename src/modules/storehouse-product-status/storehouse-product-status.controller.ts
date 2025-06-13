@@ -16,8 +16,8 @@ export class SPSController {
 	@AuthOptions(true, true)
 	@ApiOkResponse({ type: SPSFindManyResponseDto })
 	@ApiOperation({ summary: 'get all storehouse product statuss' })
-	async findMany(@Req() request: CRequest, @Query() query: SPSFindManyRequestDto): Promise<SPSFindManyResponseDto> {
-		return this.spsService.findMany(request, query)
+	async findMany(@Query() query: SPSFindManyRequestDto): Promise<SPSFindManyResponseDto> {
+		return this.spsService.findMany(query)
 	}
 
 	@Get('one')

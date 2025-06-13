@@ -14,6 +14,6 @@ export declare interface ProductStatusMVGetOneRequest extends ProductStatusMVOpt
 
 export declare interface ProductStatusMVCreateOneRequest extends Pick<ProductStatusMVRequired, 'productMVId' | 'status' | 'quantity'> {}
 
-export declare interface ProductStatusMVUpdateOneRequest extends Pick<ProductStatusMVOptional, 'productMVId' | 'status' | 'quantity' | 'isAccepted' | 'deletedAt'> {}
+export declare interface ProductStatusMVUpdateOneRequest extends Pick<ProductStatusMVOptional, 'productMVId' | 'status' | 'quantity' | 'deletedAt'> {}
 
 export declare interface ProductStatusMVDeleteOneRequest extends Pick<ProductStatusMVOptional, 'id'>, Pick<RequestOtherFields, 'method'> {}

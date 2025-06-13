@@ -42,7 +42,7 @@ export class PurchaseRepository {
 	}
 
 	async findOne(query: PurchaseFindOneRequest) {
-		const staff = await this.prisma.purchase.findFirst({
+		const purchase = await this.prisma.purchase.findFirst({
 			where: {
 				id: query.id,
 			},
@@ -53,7 +53,7 @@ export class PurchaseRepository {
 			},
 		})
 
-		return staff
+		return purchase
 	}
 
 	async countFindMany(query: PurchaseFindManyRequest) {
@@ -86,7 +86,7 @@ export class PurchaseRepository {
 	}
 
 	async getOne(query: PurchaseGetOneRequest) {
-		const staff = await this.prisma.purchase.findFirst({
+		const purchase = await this.prisma.purchase.findFirst({
 			where: {
 				id: query.id,
 				status: query.status,
@@ -100,7 +100,7 @@ export class PurchaseRepository {
 			},
 		})
 
-		return staff
+		return purchase
 	}
 
 	async countGetMany(query: PurchaseGetManyRequest) {

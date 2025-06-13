@@ -10,7 +10,6 @@ import {
 	StorehouseProductUpdateOneRequest,
 } from './interfaces'
 import { deletedAtConverter } from '../../common'
-import { StorehouseProductController } from './storehouse-product.controller'
 
 @Injectable()
 export class StorehouseProductRepository {
@@ -69,13 +68,13 @@ export class StorehouseProductRepository {
 	}
 
 	async findOne(query: StorehouseProductFindOneRequest) {
-		const staff = await this.prisma.sP.findFirst({
+		const sp = await this.prisma.sP.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return sp
 	}
 
 	async countFindMany(query: StorehouseProductFindManyRequest) {
@@ -121,14 +120,14 @@ export class StorehouseProductRepository {
 	}
 
 	async getOne(query: StorehouseProductGetOneRequest) {
-		const staff = await this.prisma.sP.findFirst({
+		const sp = await this.prisma.sP.findFirst({
 			where: {
 				id: query.id,
 				storehouseId: query.storehouseId,
 			},
 		})
 
-		return staff
+		return sp
 	}
 
 	async countGetMany(query: StorehouseProductGetManyRequest) {

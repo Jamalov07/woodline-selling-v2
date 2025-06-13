@@ -45,13 +45,13 @@ export class ProductRepository {
 	}
 
 	async findOne(query: ProductFindOneRequest) {
-		const staff = await this.prisma.product.findFirst({
+		const product = await this.prisma.product.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return product
 	}
 
 	async countFindMany(query: ProductFindManyRequest) {
@@ -93,14 +93,14 @@ export class ProductRepository {
 	}
 
 	async getOne(query: ProductGetOneRequest) {
-		const staff = await this.prisma.product.findFirst({
+		const product = await this.prisma.product.findFirst({
 			where: {
 				id: query.id,
 				publicId: query.publicId,
 			},
 		})
 
-		return staff
+		return product
 	}
 
 	async countGetMany(query: ProductGetManyRequest) {

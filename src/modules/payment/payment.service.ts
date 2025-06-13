@@ -35,12 +35,12 @@ export class PaymentService {
 	}
 
 	async findOne(query: PaymentFindOneRequest) {
-		const staff = await this.paymentRepository.findOne(query)
+		const payment = await this.paymentRepository.findOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!payment) {
+			throw new BadRequestException('payment not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...payment }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: PaymentGetManyRequest) {
@@ -59,13 +59,13 @@ export class PaymentService {
 	}
 
 	async getOne(query: PaymentGetOneRequest) {
-		const staff = await this.paymentRepository.getOne(query)
+		const payment = await this.paymentRepository.getOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!payment) {
+			throw new BadRequestException('payment not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: payment, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: PaymentCreateOneRequest) {

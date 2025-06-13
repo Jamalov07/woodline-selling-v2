@@ -10,7 +10,7 @@ export class SPSService {
 		this.spsRepository = spsRepository
 	}
 
-	async findMany(request: CRequest, query: SPSFindManyRequest) {
+	async findMany(query: SPSFindManyRequest) {
 		const spss = await this.spsRepository.findMany({ ...query })
 		const spssCount = await this.spsRepository.countFindMany({ ...query })
 
@@ -27,12 +27,12 @@ export class SPSService {
 	}
 
 	async findOne(query: SPSFindOneRequest) {
-		const staff = await this.spsRepository.findOne(query)
+		const sps = await this.spsRepository.findOne(query)
 
-		if (!staff) {
+		if (!sps) {
 			throw new BadRequestException('sps not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...sps }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: SPSGetManyRequest) {
@@ -51,13 +51,13 @@ export class SPSService {
 	}
 
 	async getOne(query: SPSGetOneRequest) {
-		const staff = await this.spsRepository.getOne(query)
+		const sps = await this.spsRepository.getOne(query)
 
-		if (!staff) {
+		if (!sps) {
 			throw new BadRequestException('sps not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: sps, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: SPSCreateOneRequest) {

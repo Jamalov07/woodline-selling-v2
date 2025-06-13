@@ -35,12 +35,12 @@ export class StorehouseService {
 	}
 
 	async findOne(query: StorehouseFindOneRequest) {
-		const staff = await this.storehouseRepository.findOne(query)
+		const storehouse = await this.storehouseRepository.findOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!storehouse) {
+			throw new BadRequestException('storehouse not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...storehouse }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: StorehouseGetManyRequest) {
@@ -59,13 +59,13 @@ export class StorehouseService {
 	}
 
 	async getOne(query: StorehouseGetOneRequest) {
-		const staff = await this.storehouseRepository.getOne(query)
+		const storehouse = await this.storehouseRepository.getOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!storehouse) {
+			throw new BadRequestException('storehouse not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: storehouse, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: StorehouseCreateOneRequest) {

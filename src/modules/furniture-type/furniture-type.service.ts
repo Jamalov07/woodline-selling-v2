@@ -35,12 +35,12 @@ export class FurnitureTypeService {
 	}
 
 	async findOne(query: FurnitureTypeFindOneRequest) {
-		const staff = await this.furnitureTypeRepository.findOne(query)
+		const furnitureType = await this.furnitureTypeRepository.findOne(query)
 
-		if (!staff) {
+		if (!furnitureType) {
 			throw new BadRequestException('furniture type not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...furnitureType }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: FurnitureTypeGetManyRequest) {
@@ -59,13 +59,13 @@ export class FurnitureTypeService {
 	}
 
 	async getOne(query: FurnitureTypeGetOneRequest) {
-		const staff = await this.furnitureTypeRepository.getOne(query)
+		const furnitureType = await this.furnitureTypeRepository.getOne(query)
 
-		if (!staff) {
+		if (!furnitureType) {
 			throw new BadRequestException('furniture type not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: furnitureType, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: FurnitureTypeCreateOneRequest) {

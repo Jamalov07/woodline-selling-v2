@@ -19,19 +19,19 @@ export class AuthGuard implements CanActivate {
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const authOptions = this.reflector.get<{ isAuthRequired: boolean; isStaffRequired: boolean }>('authOptions', context.getHandler())
+		const authOptions = this.reflector.get<{ isAuthRequired: boolean; isUserRequired: boolean }>('authOptions', context.getHandler())
 		const isAuthRequired = authOptions?.isAuthRequired
-		const isStaffRequired = authOptions?.isStaffRequired
+		const isUserRequired = authOptions?.isUserRequired
 
 		const request = context.switchToHttp().getRequest<Request>()
 
 		const token = this.extractTokenFromHeader(request, isAuthRequired)
 
-		if (isStaffRequired) {
+		if (isUserRequired) {
 			if (!token) {
 				throw new UnauthorizedException('Token not provided')
 			} else {
-				const user = await this.parseTokenWithJwt(token, isStaffRequired)
+				const user = await this.parseTokenWithJwt(token, isUserRequired)
 				request['user'] = user
 				this.logger.debug(cyan(request['user']))
 
@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
 			if (!token) {
 				return true
 			} else {
-				const user = await this.parseTokenWithJwt(token, isStaffRequired)
+				const user = await this.parseTokenWithJwt(token, isUserRequired)
 				if (Object.keys(user).length) {
 					request['user'] = user
 				}
@@ -70,12 +70,12 @@ export class AuthGuard implements CanActivate {
 		}
 	}
 
-	private async parseTokenWithJwt(token: string, isStaffRequired: boolean) {
+	private async parseTokenWithJwt(token: string, isUserRequired: boolean) {
 		try {
 			const payload = await this.jwtService.verifyAsync(token, { secret: this.configService.get('jwt.accessToken.key') })
 
 			if (!payload || !payload?.id) {
-				if (isStaffRequired) {
+				if (isUserRequired) {
 					throw new UnauthorizedException('invalid token')
 				}
 			}
@@ -84,7 +84,7 @@ export class AuthGuard implements CanActivate {
 				user = await this.prisma.user.findFirst({ where: { id: payload?.id } })
 			}
 
-			if (isStaffRequired) {
+			if (isUserRequired) {
 				if (!user) {
 					throw new UnauthorizedException('user not found with this token')
 				}
@@ -95,7 +95,7 @@ export class AuthGuard implements CanActivate {
 
 			return { id: user?.id }
 		} catch (e) {
-			if (isStaffRequired) {
+			if (isUserRequired) {
 				throw new UnauthorizedException(e?.message || e)
 			} else {
 				return {}

@@ -9,7 +9,7 @@ import {
 	ProductStatusMVGetOneRequest,
 	ProductStatusMVUpdateOneRequest,
 } from './interfaces'
-import { createResponse, CRequest, DeleteMethodEnum } from '../../common'
+import { createResponse, DeleteMethodEnum } from '../../common'
 
 @Injectable()
 export class ProductStatusMVService {
@@ -18,7 +18,7 @@ export class ProductStatusMVService {
 		this.productStatusMVRepository = productStatusMVRepository
 	}
 
-	async findMany(request: CRequest, query: ProductStatusMVFindManyRequest) {
+	async findMany(query: ProductStatusMVFindManyRequest) {
 		const productStatusMVs = await this.productStatusMVRepository.findMany({ ...query })
 		const productStatusMVsCount = await this.productStatusMVRepository.countFindMany({ ...query })
 
@@ -35,12 +35,12 @@ export class ProductStatusMVService {
 	}
 
 	async findOne(query: ProductStatusMVFindOneRequest) {
-		const staff = await this.productStatusMVRepository.findOne(query)
+		const productStatusMV = await this.productStatusMVRepository.findOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('productStatusMV not found')
+		if (!productStatusMV) {
+			throw new BadRequestException('product Status mv not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...productStatusMV }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: ProductStatusMVGetManyRequest) {
@@ -59,13 +59,13 @@ export class ProductStatusMVService {
 	}
 
 	async getOne(query: ProductStatusMVGetOneRequest) {
-		const staff = await this.productStatusMVRepository.getOne(query)
+		const productStatusMV = await this.productStatusMVRepository.getOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('productStatusMV not found')
+		if (!productStatusMV) {
+			throw new BadRequestException('product status mv not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: productStatusMV, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: ProductStatusMVCreateOneRequest) {

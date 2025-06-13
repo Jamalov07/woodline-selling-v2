@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import { createResponse, CRequest } from '../../common'
 import { PublicIdSearchRequest } from './interfaces'
+import { OrderProductType, ProductType } from '@prisma/client'
 
 @Injectable()
 export class PublicIdService {
@@ -12,37 +13,53 @@ export class PublicIdService {
 	async search(request: CRequest, query: PublicIdSearchRequest) {
 		const cart = await this.prisma.cart.findFirst({
 			where: {
-				/* publicId: query.id */
+				type: OrderProductType.nonstandart,
+				sps: { sp: { product: { publicId: query.id } } },
 			},
 		})
 
-		if (cart && cart.staffId === request.user.id) {
-			return createResponse({ data: { exists: true, isUsable: true }, success: { messages: ['search success'] }, warning: { is: true, messages: ['already exists in your cart'] } })
+		if (cart && cart.sellerId === request.user.id) {
+			return createResponse({
+				data: { exists: true, isUsable: true },
+				success: { messages: ['search success'] },
+				warning: { is: true, messages: ['you can use it, already exists in your cart'] },
+			})
 		}
 
 		const orderProduct = await this.prisma.orderProduct.findFirst({
 			where: {
-				/* publicId: query.id */
+				sps: { sp: { product: { publicId: query.id } } },
 			},
 		})
 		if (orderProduct) {
 			return createResponse({
 				data: { exists: true, isUsable: false },
 				success: { messages: ['search success'] },
-				warning: { is: true, messages: ['already exists in order product'] },
+				warning: { is: true, messages: ["you can't use it, already exists in order product"] },
 			})
-		} else {
-			return createResponse({ data: { exists: false, isUsable: true }, success: { messages: ['search success'] } })
 		}
+
+		const product = await this.prisma.product.findFirst({ where: { publicId: query.id, type: ProductType.standart } })
+
+		if (product) {
+			return createResponse({
+				data: { exists: true, isUsable: false },
+				success: { messages: ['search success'] },
+				warning: { is: true, messages: ["you can't use it, already exists in product"] },
+			})
+		}
+
+		return createResponse({ data: { exists: false, isUsable: true }, success: { messages: ['search success'] } })
 	}
 	async generate(request: CRequest) {
 		const cart = await this.prisma.cart.findFirst({
-			where: { staffId: request.user.id },
+			where: { sellerId: request.user.id },
+			select: { sps: { select: { sp: { select: { product: true } } } } },
 		})
 
 		if (cart) {
 			return createResponse({
-				data: { id: /* cart.publicId */ '0' },
+				data: { id: cart.sps.sp.product.publicId },
 				success: { messages: ['generate success'] },
 				warning: { is: true, messages: ['already generated in cart'] },
 			})
@@ -76,16 +93,18 @@ export class PublicIdService {
 	private async isPublicIdInUse(id: string): Promise<boolean> {
 		const inCart = await this.prisma.cart.findFirst({
 			where: {
-				/* publicId: id */
+				sps: { sp: { product: { publicId: id } } },
 			},
 		})
 		const inOrderProduct = await this.prisma.orderProduct.findFirst({
 			where: {
-				/* publicId: id */
+				sps: { sp: { product: { publicId: id } } },
 			},
 		})
 
-		return !!inCart || !!inOrderProduct
+		const product = await this.prisma.product.findFirst({ where: { publicId: id } })
+
+		return !!inCart || !!inOrderProduct || !!product
 	}
 
 	private incrementPublicId(current: string): string {

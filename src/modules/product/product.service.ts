@@ -35,12 +35,12 @@ export class ProductService {
 	}
 
 	async findOne(query: ProductFindOneRequest) {
-		const staff = await this.productRepository.findOne(query)
+		const product = await this.productRepository.findOne(query)
 
-		if (!staff) {
+		if (!product) {
 			throw new BadRequestException('product not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...product }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: ProductGetManyRequest) {
@@ -59,13 +59,13 @@ export class ProductService {
 	}
 
 	async getOne(query: ProductGetOneRequest) {
-		const staff = await this.productRepository.getOne(query)
+		const product = await this.productRepository.getOne(query)
 
-		if (!staff) {
+		if (!product) {
 			throw new BadRequestException('product not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: product, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: ProductCreateOneRequest) {

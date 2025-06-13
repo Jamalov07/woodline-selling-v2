@@ -46,7 +46,7 @@ export class GoogleSheetService {
 
 			const productInfos = orderProduct
 				? [
-						`${order.client.fullname} ${order.client.phone}`,
+						`${order.seller.fullname} ${order.seller.phone}`,
 						orderProduct.sps.sp.product.publicId,
 						orderProduct.sps.sp.product.model.furnitureType.name,
 						orderProduct.sps.sp.product.model.name,

@@ -14,7 +14,6 @@ import { createResponse, CRequest, DeleteMethodEnum } from '../../common'
 import { UserService } from '../user'
 import { ClientPStatus, RoleName } from '@prisma/client'
 import { GoogleSheetService } from '../shared/google-sheet'
-import { OrderFullDetail } from '../shared/google-sheet/interfaces'
 
 @Injectable()
 export class OrderService {
@@ -44,12 +43,12 @@ export class OrderService {
 	}
 
 	async findOne(query: OrderFindOneRequest) {
-		const staff = await this.orderRepository.findOne(query)
+		const order = await this.orderRepository.findOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!order) {
+			throw new BadRequestException('order not found')
 		}
-		return createResponse({ data: { ...staff }, success: { messages: ['find one success'] } })
+		return createResponse({ data: { ...order }, success: { messages: ['find one success'] } })
 	}
 
 	async getMany(query: OrderGetManyRequest) {
@@ -68,13 +67,13 @@ export class OrderService {
 	}
 
 	async getOne(query: OrderGetOneRequest) {
-		const staff = await this.orderRepository.getOne(query)
+		const order = await this.orderRepository.getOne(query)
 
-		if (!staff) {
-			throw new BadRequestException('furniture type not found')
+		if (!order) {
+			throw new BadRequestException('order not found')
 		}
 
-		return createResponse({ data: staff, success: { messages: ['get one success'] } })
+		return createResponse({ data: order, success: { messages: ['get one success'] } })
 	}
 
 	async createOne(body: OrderCreateOneRequest) {

@@ -29,13 +29,13 @@ export class SPSRepository {
 	}
 
 	async findOne(query: SPSFindOneRequest) {
-		const staff = await this.prisma.sPS.findFirst({
+		const sps = await this.prisma.sPS.findFirst({
 			where: {
 				id: query.id,
 			},
 		})
 
-		return staff
+		return sps
 	}
 
 	async countFindMany(query: SPSFindManyRequest) {
@@ -69,14 +69,14 @@ export class SPSRepository {
 	}
 
 	async getOne(query: SPSGetOneRequest) {
-		const staff = await this.prisma.sPS.findFirst({
+		const sps = await this.prisma.sPS.findFirst({
 			where: {
 				id: query.id,
 				status: query.status,
 			},
 		})
 
-		return staff
+		return sps
 	}
 
 	async countGetMany(query: SPSGetManyRequest) {

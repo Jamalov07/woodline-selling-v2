@@ -35,13 +35,13 @@ export class ProviderStorehouseRepository {
 	}
 
 	async findOne(query: ProviderStorehouseFindOneRequest) {
-		const staff = await this.prisma.providerStorehouse.findFirst({
+		const providerStorehouse = await this.prisma.providerStorehouse.findFirst({
 			where: {
 				providerId: query.providerId,
 			},
 		})
 
-		return staff
+		return providerStorehouse
 	}
 
 	async countFindMany(query: ProviderStorehouseFindManyRequest) {
@@ -71,14 +71,14 @@ export class ProviderStorehouseRepository {
 	}
 
 	async getOne(query: ProviderStorehouseGetOneRequest) {
-		const staff = await this.prisma.providerStorehouse.findFirst({
+		const providerStorehouse = await this.prisma.providerStorehouse.findFirst({
 			where: {
 				providerId: query.providerId,
 				storehouseId: query.storehouseId,
 			},
 		})
 
-		return staff
+		return providerStorehouse
 	}
 
 	async countGetMany(query: ProviderStorehouseGetManyRequest) {
