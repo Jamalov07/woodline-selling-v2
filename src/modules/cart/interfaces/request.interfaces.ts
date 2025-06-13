@@ -13,11 +13,11 @@ export declare interface CartGetOneRequest extends CartOptional {}
 export declare interface CartCreateOneRequest
 	extends Pick<CartRequired, 'price' | 'priceWithSale' | 'sale' | 'totalSum'>,
 		Pick<CartOptional, 'description' | 'quantity' | 'sellerId' | 'type' | 'spsId'> {
-	productDetail?: ProductCreateOneRequest
+	productDetail?: Omit<ProductCreateOneRequest, 'description'>
 }
 
 export declare interface CartUpdateOneRequest extends Pick<CartOptional, 'quantity' | 'spsId' | 'deletedAt' | 'description' | 'price' | 'priceWithSale' | 'sale' | 'totalSum'> {
-	productDetail?: ProductCreateOneRequest
+	productDetail?: Omit<ProductCreateOneRequest, 'description'>
 }
 
 export declare interface CartDeleteOneRequest extends Pick<CartOptional, 'id'>, Pick<RequestOtherFields, 'method'> {}

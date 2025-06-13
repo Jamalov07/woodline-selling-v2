@@ -7,7 +7,7 @@ export declare interface SellingFindManyResponse extends GlobalResponse {
 	data: SellingFindManyData
 }
 
-export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'status' | 'createdAt'> {}
+export declare interface SellingFindOneData extends Pick<SellingRequired, 'id' | 'isAccepted' | 'createdAt'> {}
 
 export declare interface SellingFindOneResponse extends GlobalResponse {
 	data: SellingFindOneData

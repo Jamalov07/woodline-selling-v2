@@ -1,20 +1,19 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { DefaultOptionalFieldsDto, DefaultRequiredFieldsDto } from '@common'
 import { SellingOptional, SellingRequired } from '../interfaces'
-import { $Enums, InventoryStatus } from '@prisma/client'
 
 export class SellingRequiredDto extends DefaultRequiredFieldsDto implements SellingRequired {
-	@ApiProperty({ enum: InventoryStatus })
+	@ApiProperty({ enum: Boolean })
 	@IsNotEmpty()
-	@IsEnum(InventoryStatus)
-	status: $Enums.InventoryStatus
+	@IsBoolean()
+	isAccepted: boolean
 
 	@ApiProperty({ type: String, example: '00097072-f510-4ded-a18f-976d7fa2e024' })
 	@IsNotEmpty()
 	@IsString()
 	@IsUUID('4')
-	orderId: string
+	orderProductId: string
 
 	@ApiProperty({ type: String, example: '00097072-f510-4ded-a18f-976d7fa2e024' })
 	@IsNotEmpty()
@@ -30,16 +29,16 @@ export class SellingRequiredDto extends DefaultRequiredFieldsDto implements Sell
 }
 
 export class SellingOptionalDto extends DefaultOptionalFieldsDto implements SellingOptional {
-	@ApiPropertyOptional({ enum: InventoryStatus })
+	@ApiPropertyOptional({ enum: Boolean })
 	@IsOptional()
-	@IsEnum(InventoryStatus)
-	status?: $Enums.InventoryStatus
+	@IsBoolean()
+	isAccepted?: boolean
 
 	@ApiPropertyOptional({ type: String, example: '00097072-f510-4ded-a18f-976d7fa2e024' })
 	@IsOptional()
 	@IsString()
 	@IsUUID('4')
-	orderId?: string
+	orderProductId?: string
 
 	@ApiPropertyOptional({ type: String, example: '00097072-f510-4ded-a18f-976d7fa2e024' })
 	@IsOptional()

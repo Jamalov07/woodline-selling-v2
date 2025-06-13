@@ -12,7 +12,7 @@ import {
 } from './interfaces'
 import { createResponse, DeleteMethodEnum } from '../../common'
 import { UserService } from '../user'
-import { RoleName } from '@prisma/client'
+import { InventoryStatus, RoleName } from '@prisma/client'
 
 @Injectable()
 export class PurchaseService {
@@ -80,13 +80,18 @@ export class PurchaseService {
 		if (!storekeeperRole) {
 			throw new BadRequestException('storekeeper not found')
 		}
-		await this.purchaseRepository.createOne({ ...body, storekeeperId: request.user.id })
+		const purchase = await this.purchaseRepository.createOne({ ...body, storekeeperId: request.user.id })
+		await this.purchaseRepository.updateOne({ id: purchase.id }, { status: InventoryStatus.accepted })
 
 		return createResponse({ data: null, success: { messages: ['create one success'] } })
 	}
 
 	async updateOne(query: PurchaseGetOneRequest, body: PurchaseUpdateOneRequest) {
-		await this.getOne(query)
+		const purchase = await this.getOne(query)
+
+		if (purchase.data.status === InventoryStatus.accepted) {
+			throw new BadRequestException("purchase is accepted, you can't edit this purchase")
+		}
 
 		await this.purchaseRepository.updateOne(query, { ...body })
 

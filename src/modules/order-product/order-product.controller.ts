@@ -11,7 +11,7 @@ import {
 import { OrderProductFindManyResponseDto, OrderProductFindOneResponseDto, OrderProductModifyResponseDto } from './dtos/response.dtos'
 import { AuthOptions, CRequest } from '../../common'
 
-@Controller('orderProduct')
+@Controller('order-product')
 export class OrderProductController {
 	private readonly orderProductService: OrderProductService
 	constructor(orderProductService: OrderProductService) {

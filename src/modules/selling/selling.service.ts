@@ -75,7 +75,11 @@ export class SellingService {
 	}
 
 	async updateOne(query: SellingGetOneRequest, body: SellingUpdateOneRequest) {
-		await this.getOne(query)
+		const selling = await this.getOne(query)
+
+		if (selling.data.isAccepted) {
+			throw new BadRequestException("selling is accepted, you can't edit this selling")
+		}
 
 		await this.sellingRepository.updateOne(query, { ...body })
 

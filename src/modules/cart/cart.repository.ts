@@ -222,10 +222,9 @@ export class CartRepository {
 				})
 				spsCustomId = product?.SPs[0]?.statuses[0]?.id
 			}
-		}
-
-		if (!spsCustomId) {
-			return null
+			if (!spsCustomId) {
+				return null
+			}
 		}
 
 		const cart = await this.prisma.cart.create({
@@ -233,7 +232,7 @@ export class CartRepository {
 				type: body.spsId ? OrderProductType.standart : OrderProductType.nonstandart,
 				sellerId: body.sellerId,
 				spsId: body.spsId ? body.spsId : spsCustomId,
-				quantity: body.spsId ? body.quantity : 1,
+				quantity: body.quantity,
 				description: body.description,
 				price: body.price,
 				priceWithSale: body.priceWithSale,

@@ -7,8 +7,7 @@ export declare interface OrderProductFindManyResponse extends GlobalResponse {
 	data: OrderProductFindManyData
 }
 
-export declare interface OrderProductFindOneData
-	extends Pick<OrderProductRequired, 'id' | 'createdAt' | 'description' | 'price' | 'priceWithSale' | 'quantity' | 'sale' | 'status' | 'totalSum' | 'type'> {}
+export declare interface OrderProductFindOneData extends Pick<OrderProductRequired, 'id' | 'createdAt'> {}
 
 export declare interface OrderProductFindOneResponse extends GlobalResponse {
 	data: OrderProductFindOneData

@@ -10,7 +10,7 @@ import {
 	PurchaseUpdateOneRequest,
 } from './interfaces'
 import { deletedAtConverter } from '../../common'
-import { ProductMVType } from '@prisma/client'
+import { InventoryStatus, ProductMVType } from '@prisma/client'
 
 @Injectable()
 export class PurchaseRepository {
@@ -91,6 +91,13 @@ export class PurchaseRepository {
 				id: query.id,
 				status: query.status,
 			},
+			select: {
+				id: true,
+				status: true,
+				provider: true,
+				storehouse: true,
+				productMVs: { select: { id: true, product: true, statuses: true } },
+			},
 		})
 
 		return staff
@@ -120,7 +127,7 @@ export class PurchaseRepository {
 		for (const product of body.productMVs) {
 			await this.prisma.productMV.create({
 				data: {
-					type: ProductMVType.selling,
+					type: ProductMVType.purchase,
 					productId: product.id,
 					purchaseId: purchase.id,
 					statuses: {
@@ -140,6 +147,10 @@ export class PurchaseRepository {
 	}
 
 	async updateOne(query: PurchaseGetOneRequest, body: PurchaseUpdateOneRequest) {
+		if (body.status === InventoryStatus.accepted) {
+			await this.addProductToStorehouse(query.id)
+		}
+
 		const purchase = await this.prisma.purchase.update({
 			where: { id: query.id },
 			data: {
@@ -159,5 +170,44 @@ export class PurchaseRepository {
 			where: { id: query.id },
 		})
 		return purchase
+	}
+
+	async addProductToStorehouse(id: string) {
+		const pur = await this.getOne({ id: id })
+
+		for (const pr of pur.productMVs) {
+			const sp = await this.prisma.sP.findFirst({
+				where: {
+					productId: pr.product.id,
+					storehouseId: pur.storehouse.id,
+				},
+			})
+			if (sp) {
+				for (const status of pr.statuses) {
+					const sps = await this.prisma.sPS.findFirst({
+						where: { spId: sp.id, status: status.status },
+					})
+
+					if (sps) {
+						await this.prisma.sPS.update({ where: { id: sps.id }, data: { quantity: { increment: status.quantity } } })
+					} else {
+						await this.prisma.sPS.create({ data: { quantity: status.quantity, status: status.status, spId: sp.id } })
+					}
+				}
+			} else {
+				await this.prisma.sP.create({
+					data: {
+						productId: pr.product.id,
+						storehouseId: pur.storehouse.id,
+						statuses: {
+							createMany: {
+								skipDuplicates: false,
+								data: pr.statuses.map((s) => ({ status: s.status, quantity: s.quantity })),
+							},
+						},
+					},
+				})
+			}
+		}
 	}
 }

@@ -33,6 +33,8 @@ export class OrderProductRepository {
 			},
 			select: {
 				id: true,
+				type: true,
+				status: true,
 				createdAt: true,
 				description: true,
 				price: true,
@@ -77,6 +79,8 @@ export class OrderProductRepository {
 			},
 			select: {
 				id: true,
+				type: true,
+				status: true,
 				createdAt: true,
 				description: true,
 				price: true,
@@ -161,7 +165,7 @@ export class OrderProductRepository {
 				totalSum: true,
 				orderId: true,
 				spsId: true,
-				sps: { select: { quantity: true, status: true, sp: { select: { productId: true, statuses: true } } } },
+				sps: { select: { quantity: true, status: true, sp: { select: { productId: true, statuses: true, storehouseId: true } } } },
 			},
 		})
 
@@ -251,14 +255,8 @@ export class OrderProductRepository {
 			if (orP.type === OrderProductType.nonstandart) {
 				await this.prisma.sPS.update({ where: { id: orP.spsId }, data: { status: SPStatus.active } })
 			}
-			const selling = await this.prisma.selling.findFirst({ where: { orderId: orP.orderId } })
-			await this.prisma.productMV.create({
-				data: {
-					type: ProductMVType.selling,
-					sellingId: selling.id,
-					productId: orP.sps.sp.productId,
-					statuses: { create: { status: ProductMVStatus.active, quantity: orP.quantity } },
-				},
+			await this.prisma.selling.create({
+				data: { storehouseId: orP.sps.sp.storehouseId, orderProductId: orP.id },
 			})
 		}
 

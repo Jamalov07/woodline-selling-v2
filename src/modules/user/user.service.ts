@@ -75,6 +75,8 @@ export class UserService {
 			if (!body.storehouseId) {
 				throw new BadRequestException('storehouseId should not be empty')
 			}
+		} else {
+			delete body.storehouseId
 		}
 
 		const candidate = await this.userRepository.getOne({ phone: body.phone })

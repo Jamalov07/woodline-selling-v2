@@ -7,16 +7,16 @@ export class SellingFindManyRequestDto
 	extends IntersectionType(
 		PaginationRequestDto,
 		PickType(RequestOtherFieldsDto, ['isDeleted']),
-		PickType(SellingOptionalDto, ['orderId', 'storehouseId', 'storekeeperId', 'status']),
+		PickType(SellingOptionalDto, ['orderProductId', 'storehouseId', 'storekeeperId', 'isAccepted']),
 	)
 	implements SellingFindManyRequest {}
 
 export class SellingFindOneRequestDto extends PickType(SellingRequiredDto, ['id']) implements SellingFindOneRequest {}
 
-export class SellingCreateOneRequestDto extends PickType(SellingRequiredDto, ['orderId', 'storehouseId', 'storekeeperId']) implements SellingCreateOneRequest {}
+export class SellingCreateOneRequestDto extends PickType(SellingRequiredDto, ['orderProductId', 'storehouseId', 'storekeeperId']) implements SellingCreateOneRequest {}
 
 export class SellingUpdateOneRequestDto
-	extends PickType(SellingOptionalDto, ['orderId', 'deletedAt', 'storehouseId', 'storekeeperId', 'status'])
+	extends PickType(SellingOptionalDto, ['orderProductId', 'deletedAt', 'storehouseId', 'storekeeperId', 'isAccepted'])
 	implements SellingUpdateOneRequest {}
 
 export class SellingDeleteOneRequestDto

@@ -355,6 +355,7 @@ export class OrderRepository {
 												tissue: true,
 											},
 										},
+										storehouseId: true,
 									},
 								},
 								status: true,
@@ -365,50 +366,12 @@ export class OrderRepository {
 			},
 		})
 
-		const storehouseId = getMostFrequentStorehouseId(carts)
-
-		const selling = await this.prisma.selling.create({
-			data: {
-				orderId: order.id,
-				storehouseId: storehouseId,
-			},
-		})
-
 		const standartPros = order.products.filter((pr) => pr.type === OrderProductType.standart)
 
-		for (const pro of standartPros) {
-			const proMv = await this.prisma.productMV.findFirst({
-				where: {
-					sellingId: selling.id,
-					type: ProductMVType.selling,
-					productId: pro.sps.sp.product.id,
-				},
-			})
-
-			if (!proMv) {
-				await this.prisma.productMV.create({
-					data: {
-						sellingId: selling.id,
-						type: ProductMVType.selling,
-						productId: pro.sps.sp.product.id,
-						statuses: {
-							create: {
-								quantity: pro.quantity,
-								status: pro.sps.status !== SPStatus.pending ? pro.sps.status : SPStatus.active,
-							},
-						},
-					},
-				})
-			} else {
-				await this.prisma.productStatusMV.create({
-					data: {
-						productMVId: proMv.id,
-						quantity: pro.quantity,
-						status: pro.sps.status !== SPStatus.pending ? pro.sps.status : SPStatus.active,
-					},
-				})
-			}
-		}
+		await this.prisma.selling.createMany({
+			skipDuplicates: false,
+			data: standartPros.map((prod) => ({ storehouseId: prod.sps.sp.storehouseId, orderProductId: prod.id })),
+		})
 
 		await this.prisma.cart.deleteMany({ where: { sellerId: body.sellerId } })
 

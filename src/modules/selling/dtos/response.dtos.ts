@@ -3,7 +3,7 @@ import { SellingFindManyData, SellingFindManyResponse, SellingFindOneData, Selli
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { SellingRequiredDto } from './fields.dtos'
 
-export class SellingFindOneDataDto extends PickType(SellingRequiredDto, ['id', 'status', 'createdAt']) implements SellingFindOneData {}
+export class SellingFindOneDataDto extends PickType(SellingRequiredDto, ['id', 'isAccepted', 'createdAt']) implements SellingFindOneData {}
 
 export class SellingFindManyDataDto extends PaginationResponseDto implements SellingFindManyData {
 	@ApiProperty({ type: SellingFindOneDataDto, isArray: true })

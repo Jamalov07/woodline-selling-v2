@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import {
 	SellingCreateOneRequest,
@@ -27,11 +27,11 @@ export class SellingRepository {
 		const sellings = await this.prisma.selling.findMany({
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
-				status: query.status,
+				isAccepted: query.isAccepted,
 			},
 			select: {
 				id: true,
-				status: true,
+				isAccepted: true,
 				createdAt: true,
 			},
 			...paginationOptions,
@@ -47,7 +47,7 @@ export class SellingRepository {
 			},
 			select: {
 				id: true,
-				status: true,
+				isAccepted: true,
 				createdAt: true,
 			},
 		})
@@ -59,7 +59,7 @@ export class SellingRepository {
 		const sellingCount = await this.prisma.selling.count({
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
-				status: query.status,
+				isAccepted: query.isAccepted,
 			},
 		})
 
@@ -76,7 +76,7 @@ export class SellingRepository {
 			where: {
 				id: { in: query.ids },
 				deletedAt: deletedAtConverter(query.isDeleted),
-				status: query.status,
+				isAccepted: query.isAccepted,
 			},
 			...paginationOptions,
 		})
@@ -88,7 +88,14 @@ export class SellingRepository {
 		const staff = await this.prisma.selling.findFirst({
 			where: {
 				id: query.id,
-				status: query.status,
+				isAccepted: query.isAccepted,
+			},
+			select: {
+				id: true,
+				isAccepted: true,
+				createdAt: true,
+				storehouse: true,
+				orderProduct: true,
 			},
 		})
 
@@ -100,7 +107,7 @@ export class SellingRepository {
 			where: {
 				id: { in: query.ids },
 				deletedAt: deletedAtConverter(query.isDeleted),
-				status: query.status,
+				isAccepted: query.isAccepted,
 			},
 		})
 
@@ -110,7 +117,7 @@ export class SellingRepository {
 	async createOne(body: SellingCreateOneRequest) {
 		const selling = await this.prisma.selling.create({
 			data: {
-				orderId: body.orderId,
+				orderProductId: body.orderProductId,
 				storehouseId: body.storehouseId,
 				storekeeperId: body.storekeeperId,
 			},
@@ -119,13 +126,30 @@ export class SellingRepository {
 	}
 
 	async updateOne(query: SellingGetOneRequest, body: SellingUpdateOneRequest) {
+		const sell = await this.getOne({ id: query.id })
+
+		if (body.isAccepted) {
+			const sps = await this.prisma.sPS.findFirst({
+				where: { id: sell.orderProduct.spsId },
+			})
+
+			if (sps.quantity < sell.orderProduct.quantity) {
+				throw new BadRequestException('product not enough to out')
+			} else {
+				await this.prisma.sPS.update({
+					where: { id: sps.id },
+					data: { quantity: { decrement: sell.orderProduct.quantity } },
+				})
+			}
+		}
+
 		const selling = await this.prisma.selling.update({
 			where: { id: query.id },
 			data: {
-				orderId: body.orderId,
+				orderProductId: body.orderProductId,
 				storehouseId: body.storehouseId,
 				storekeeperId: body.storekeeperId,
-				status: body.status,
+				isAccepted: body.isAccepted,
 				deletedAt: body.deletedAt,
 			},
 		})

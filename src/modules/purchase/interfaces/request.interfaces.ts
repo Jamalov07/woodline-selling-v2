@@ -13,7 +13,7 @@ export declare interface PurchaseGetManyRequest extends PaginationRequest, Purch
 
 export declare interface PurchaseGetOneRequest extends PurchaseOptional {}
 
-export declare interface PurchasePruduct {
+export declare interface PurchaseProduct {
 	id: string
 	statuses: PurchaseProductStatus[]
 }
@@ -24,7 +24,7 @@ export declare interface PurchaseProductStatus {
 }
 
 export declare interface PurchaseCreateOneRequest extends Pick<PurchaseRequired, 'providerId' | 'storehouseId'>, Pick<PurchaseOptional, 'storekeeperId'> {
-	productMVs: PurchasePruduct[]
+	productMVs: PurchaseProduct[]
 }
 
 export declare interface PurchaseUpdateOneRequest extends Pick<PurchaseOptional, 'providerId' | 'storehouseId' | 'storekeeperId' | 'status' | 'deletedAt'> {}

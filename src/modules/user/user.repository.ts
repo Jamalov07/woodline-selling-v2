@@ -107,7 +107,7 @@ export class UserRepository {
 				phone: body.phone,
 				roles: { connect: body.rolesToConnect.map((r) => ({ name: r })) },
 				actions: { connect: body.actionsToConnect.map((r) => ({ id: r })) },
-				storehouse: { create: { storehouseId: body.storehouseId } },
+				storehouse: body.storehouseId ? { create: { storehouseId: body.storehouseId } } : {},
 			},
 		})
 		return user
