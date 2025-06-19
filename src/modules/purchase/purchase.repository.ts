@@ -7,6 +7,7 @@ import {
 	PurchaseFindOneRequest,
 	PurchaseGetManyRequest,
 	PurchaseGetOneRequest,
+	PurchaseProduct,
 	PurchaseUpdateOneRequest,
 } from './interfaces'
 import { deletedAtConverter } from '../../common'
@@ -166,16 +167,26 @@ export class PurchaseRepository {
 			},
 		})
 
-		for (const product of body.productMVs) {
+		const productmvs = {}
+		for (const pr of body.productMVs) {
+			if (!productmvs[pr.id]) {
+				productmvs[pr.id] = []
+			}
+			productmvs[pr.id].push({ status: pr.status, quantity: pr.quantity })
+		}
+
+		console.log(productmvs)
+
+		for (const productId of Object.keys(productmvs)) {
 			await this.prisma.productMV.create({
 				data: {
 					type: ProductMVType.purchase,
-					productId: product.id,
+					productId: productId,
 					purchaseId: purchase.id,
 					statuses: {
 						createMany: {
 							skipDuplicates: false,
-							data: product.statuses.map((s) => ({
+							data: productmvs[productId].map((s: Omit<PurchaseProduct, 'id'>) => ({
 								quantity: s.quantity,
 								status: s.status,
 							})),

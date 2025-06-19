@@ -15,10 +15,6 @@ export declare interface PurchaseGetOneRequest extends PurchaseOptional {}
 
 export declare interface PurchaseProduct {
 	id: string
-	statuses: PurchaseProductStatus[]
-}
-
-export declare interface PurchaseProductStatus {
 	status: ProductMVStatus
 	quantity: number
 }

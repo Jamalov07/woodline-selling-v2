@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import { SPSCreateOneRequest, SPSDeleteOneRequest, SPSFindManyRequest, SPSFindOneRequest, SPSGetManyRequest, SPSGetOneRequest, SPSUpdateOneRequest } from './interfaces'
 import { deletedAtConverter } from '../../common'
+import { ProductType, SPStatus } from '@prisma/client'
 
 @Injectable()
 export class SPSRepository {
@@ -20,7 +21,8 @@ export class SPSRepository {
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				spId: query.spId,
-				status: query.status,
+				status: query.status ?? { not: SPStatus.pending },
+				sp: { product: { type: { not: ProductType.nonstandart } } },
 			},
 			...paginationOptions,
 		})

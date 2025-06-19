@@ -1,13 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger'
-import {
-	PurchaseCreateOneRequest,
-	PurchaseDeleteOneRequest,
-	PurchaseFindManyRequest,
-	PurchaseFindOneRequest,
-	PurchaseProductStatus,
-	PurchasePruduct,
-	PurchaseUpdateOneRequest,
-} from '../interfaces'
+import { PurchaseCreateOneRequest, PurchaseDeleteOneRequest, PurchaseFindManyRequest, PurchaseFindOneRequest, PurchaseProduct, PurchaseUpdateOneRequest } from '../interfaces'
 import { PaginationRequestDto, RequestOtherFieldsDto } from '../../../common'
 import { PurchaseOptionalDto, PurchaseRequiredDto } from './fields.dtos'
 import { $Enums, ProductMVStatus } from '@prisma/client'
@@ -24,7 +16,11 @@ export class PurchaseFindManyRequestDto
 
 export class PurchaseFindOneRequestDto extends PickType(PurchaseRequiredDto, ['id']) implements PurchaseFindOneRequest {}
 
-export class PurchaseProductStatusDto implements PurchaseProductStatus {
+export class PurchaseProductDto implements PurchaseProduct {
+	@ApiProperty({ type: String })
+	@IsNotEmpty()
+	@IsUUID('4')
+	id: string
 	@ApiProperty({ enum: ProductMVStatus })
 	@IsNotEmpty()
 	@IsEnum(ProductMVStatus)
@@ -36,27 +32,13 @@ export class PurchaseProductStatusDto implements PurchaseProductStatus {
 	quantity: number
 }
 
-export class PurchasePruductDto implements PurchasePruduct {
-	@ApiProperty({ type: String })
-	@IsNotEmpty()
-	@IsUUID('4')
-	id: string
-
-	@ApiProperty({ type: PurchaseProductStatusDto })
-	@ValidateNested({ each: true })
-	@Type(() => PurchaseProductStatusDto)
-	@IsArray()
-	@ArrayNotEmpty()
-	statuses: PurchaseProductStatus[]
-}
-
 export class PurchaseCreateOneRequestDto extends PickType(PurchaseRequiredDto, ['providerId', 'storehouseId']) implements PurchaseCreateOneRequest {
-	@ApiProperty({ type: PurchasePruductDto })
+	@ApiProperty({ type: PurchaseProductDto })
 	@ValidateNested({ each: true })
-	@Type(() => PurchasePruductDto)
+	@Type(() => PurchaseProductDto)
 	@IsArray()
 	@ArrayNotEmpty()
-	productMVs: PurchasePruduct[]
+	productMVs: PurchaseProduct[]
 }
 
 export class PurchaseUpdateOneRequestDto
