@@ -40,8 +40,9 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@IsOptional()
 	@IsArray()
 	@IsEnum(RoleName, { each: true })
+	@Transform(({ value }) => (value ? (Array.isArray(value) ? value : [value]) : undefined))
 	@ArrayUnique({ message: 'role names should be unique' })
-	roleNames?: RoleName[] = []
+	roleNames?: RoleName[] = undefined
 
 	@ApiProperty({ type: String, isArray: true })
 	@IsOptional()

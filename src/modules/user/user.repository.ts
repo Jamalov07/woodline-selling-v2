@@ -18,7 +18,7 @@ export class UserRepository {
 		const users = await this.prisma.user.findMany({
 			where: {
 				fullname: query.fullname,
-				// roles: { some: { name: { in: query.roleNames } } },
+				roles: { some: { name: { in: query.roleNames } } },
 				OR: [{ fullname: { contains: query.search, mode: 'insensitive' } }, { phone: { contains: query.search, mode: 'insensitive' } }],
 			},
 			select: {
