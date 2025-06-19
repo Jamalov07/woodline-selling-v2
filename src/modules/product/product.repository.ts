@@ -38,6 +38,25 @@ export class ProductRepository {
 					{ model: { furnitureType: { name: { contains: query.search, mode: 'insensitive' } } } },
 				],
 			},
+			select: {
+				id: true,
+				type: true,
+				description: true,
+				direction: true,
+				publicId: true,
+				quantity: true,
+				tissue: true,
+				createdAt: true,
+				model: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						provider: { select: { id: true, phone: true, fullname: true } },
+						furnitureType: { select: { id: true, name: true, createdAt: true } },
+					},
+				},
+			},
 			...paginationOptions,
 		})
 
@@ -48,6 +67,25 @@ export class ProductRepository {
 		const product = await this.prisma.product.findFirst({
 			where: {
 				id: query.id,
+			},
+			select: {
+				id: true,
+				type: true,
+				description: true,
+				direction: true,
+				publicId: true,
+				quantity: true,
+				tissue: true,
+				createdAt: true,
+				model: {
+					select: {
+						id: true,
+						name: true,
+						createdAt: true,
+						provider: { select: { id: true, phone: true, fullname: true } },
+						furnitureType: { select: { id: true, name: true, createdAt: true } },
+					},
+				},
 			},
 		})
 

@@ -25,6 +25,45 @@ export class SPSRepository {
 				sp: { product: { type: { not: ProductType.nonstandart } } },
 			},
 			...paginationOptions,
+			select: {
+				id: true,
+				createdAt: true,
+				quantity: true,
+				status: true,
+				bookings: {
+					select: {
+						quantity: true,
+						seller: { select: { id: true, fullname: true, phone: true } },
+						id: true,
+						createdAt: true,
+					},
+				},
+				sp: {
+					select: {
+						product: {
+							select: {
+								id: true,
+								createdAt: true,
+								description: true,
+								direction: true,
+								publicId: true,
+								quantity: true,
+								model: {
+									select: {
+										id: true,
+										createdAt: true,
+										name: true,
+										furnitureType: { select: { id: true, name: true, createdAt: true } },
+									},
+								},
+								tissue: true,
+								type: true,
+							},
+						},
+						storehouse: { select: { id: true, type: true, name: true, createdAt: true } },
+					},
+				},
+			},
 		})
 
 		return spss
@@ -34,6 +73,45 @@ export class SPSRepository {
 		const sps = await this.prisma.sPS.findFirst({
 			where: {
 				id: query.id,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				quantity: true,
+				status: true,
+				bookings: {
+					select: {
+						quantity: true,
+						seller: { select: { id: true, fullname: true, phone: true } },
+						id: true,
+						createdAt: true,
+					},
+				},
+				sp: {
+					select: {
+						product: {
+							select: {
+								id: true,
+								createdAt: true,
+								description: true,
+								direction: true,
+								publicId: true,
+								quantity: true,
+								model: {
+									select: {
+										id: true,
+										createdAt: true,
+										name: true,
+										furnitureType: { select: { id: true, name: true, createdAt: true } },
+									},
+								},
+								tissue: true,
+								type: true,
+							},
+						},
+						storehouse: { select: { id: true, type: true, name: true, createdAt: true } },
+					},
+				},
 			},
 		})
 

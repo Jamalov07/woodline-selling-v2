@@ -123,6 +123,7 @@ model User {
 
   carts          Cart[]
   orderProducts  OrderProduct[]
+  bookings       SPSBooking[]
   
   soldToMe  Order[]  @relation(name: "ClientOrder")
   soldByMe  Order[]  @relation(name: "SellerOrder")
@@ -412,11 +413,12 @@ model SPSBooking {
   updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
   deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
 
-  sellerId  String  @map("seller_id")  @db.VarChar()
+  sellerId  String  @map("seller_id")  @db.Uuid
   quantity  Int     @map("quantity")   @db.Integer    @default(1)
   spsId     String  @map("sps_id")     @db.Uuid
 
-  sps  SPS  @relation(fields: [ spsId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  sps     SPS   @relation(fields: [ spsId    ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
+  seller  User  @relation(fields: [ sellerId ], references: [ id ], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([ id ])
   @@map("sps_booking")
