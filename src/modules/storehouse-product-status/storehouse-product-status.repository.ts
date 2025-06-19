@@ -30,6 +30,7 @@ export class SPSRepository {
 				createdAt: true,
 				quantity: true,
 				status: true,
+				carts: { select: { id: true, quantity: true, seller: { select: { id: true, fullname: true, phone: true } } } },
 				bookings: {
 					select: {
 						quantity: true,
@@ -79,6 +80,7 @@ export class SPSRepository {
 				createdAt: true,
 				quantity: true,
 				status: true,
+				carts: { select: { id: true, quantity: true, seller: { select: { id: true, fullname: true, phone: true } } } },
 				bookings: {
 					select: {
 						quantity: true,
