@@ -34,6 +34,27 @@ export class PurchaseRepository {
 				id: true,
 				status: true,
 				createdAt: true,
+				provider: { select: { id: true, phone: true, fullname: true } },
+				storehouse: { select: { id: true, name: true, type: true } },
+				storekeeper: { select: { id: true, phone: true, fullname: true } },
+				productMVs: {
+					select: {
+						product: {
+							select: {
+								id: true,
+								createdAt: true,
+								type: true,
+								publicId: true,
+								tissue: true,
+								direction: true,
+								quantity: true,
+								description: true,
+								model: { select: { id: true, name: true, furnitureType: { select: { id: true, name: true } } } },
+							},
+						},
+						statuses: true,
+					},
+				},
 			},
 			...paginationOptions,
 		})
@@ -50,6 +71,27 @@ export class PurchaseRepository {
 				id: true,
 				status: true,
 				createdAt: true,
+				provider: { select: { id: true, phone: true, fullname: true } },
+				storehouse: { select: { id: true, name: true, type: true } },
+				storekeeper: { select: { id: true, phone: true, fullname: true } },
+				productMVs: {
+					select: {
+						product: {
+							select: {
+								id: true,
+								createdAt: true,
+								type: true,
+								publicId: true,
+								tissue: true,
+								direction: true,
+								quantity: true,
+								description: true,
+								model: { select: { id: true, name: true, furnitureType: { select: { id: true, name: true } } } },
+							},
+						},
+						statuses: true,
+					},
+				},
 			},
 		})
 

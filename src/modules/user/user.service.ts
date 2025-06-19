@@ -69,6 +69,8 @@ export class UserService {
 			if (!body.source) {
 				throw new BadRequestException('source should not be empty')
 			}
+		} else {
+			delete body.source
 		}
 
 		if (body.rolesToConnect.includes(RoleName.provider)) {
