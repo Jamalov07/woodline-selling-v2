@@ -33,6 +33,35 @@ export class SellingRepository {
 				id: true,
 				isAccepted: true,
 				createdAt: true,
+				storehouse: { select: { id: true, createdAt: true, name: true, type: true } },
+				storekeeper: { select: { id: true, fullname: true, phone: true, createdAt: true } },
+				orderProduct: {
+					select: {
+						id: true,
+						createdAt: true,
+						quantity: true,
+						sps: {
+							select: {
+								status: true,
+								sp: {
+									select: {
+										product: {
+											select: {
+												id: true,
+												direction: true,
+												tissue: true,
+												description: true,
+												publicId: true,
+												quantity: true,
+												model: { select: { id: true, name: true, createdAt: true, furnitureType: { select: { id: true, createdAt: true, name: true } } } },
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 			...paginationOptions,
 		})
@@ -49,6 +78,35 @@ export class SellingRepository {
 				id: true,
 				isAccepted: true,
 				createdAt: true,
+				storehouse: { select: { id: true, createdAt: true, name: true, type: true } },
+				storekeeper: { select: { id: true, fullname: true, phone: true, createdAt: true } },
+				orderProduct: {
+					select: {
+						id: true,
+						createdAt: true,
+						quantity: true,
+						sps: {
+							select: {
+								status: true,
+								sp: {
+									select: {
+										product: {
+											select: {
+												id: true,
+												direction: true,
+												tissue: true,
+												description: true,
+												publicId: true,
+												quantity: true,
+												model: { select: { id: true, name: true, createdAt: true, furnitureType: { select: { id: true, createdAt: true, name: true } } } },
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		})
 
