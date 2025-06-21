@@ -113,7 +113,7 @@ model User {
   phone     String   @map("phone")     @db.VarChar()
   token     String?  @map("token")     @db.VarChar()
   source    String   @map("source")    @db.VarChar()          @default("")  
-  balance   Decimal  @map("balance")   @db.Decimal(10,3)      @default(0)
+  balance   Decimal  @map("balance")   @db.Decimal(20,3)      @default(0)
   fullname  String   @map("fullname")  @db.VarChar()
   password  String   @map("password")  @db.VarChar()
   
@@ -228,12 +228,12 @@ model Payment {
   updatedAt  DateTime   @map("updated_at")  @db.Timestamptz  @updatedAt
   deletedAt  DateTime?  @map("deleted_at")  @db.Timestamptz
 
-  sum          Decimal          @map("sum")          @db.Decimal(10,3)  @default(0)
-  exchangeRate Decimal          @map("exchange_rate")@db.Decimal(10,3)  @default(1)
+  sum          Decimal          @map("sum")          @db.Decimal(20,3)  @default(0)
+  exchangeRate Decimal          @map("exchange_rate")@db.Decimal(20,3)  @default(1)
   method       PaymentMethod    @map("method")
   fromCurrency PaymentCurrency  @map("from_c")                          @default(uzs)
   toCurrency   PaymentCurrency  @map("to_c")                            @default(uzs)
-  totalSum     Decimal          @map("total_sum")    @db.Decimal(10,3)  @default(0)
+  totalSum     Decimal          @map("total_sum")    @db.Decimal(20,3)  @default(0)
   description  String           @map("description")  @db.VarChar()      @default("")
   orderId      String           @map("order_id")     @db.Uuid
 
@@ -301,9 +301,9 @@ model Cart {
 
   sale           Int               @map("sale")               @db.Integer        @default(0)
   quantity       Int               @map("quantity")           @db.Integer        @default(1)
-  price          Decimal           @map("price")              @db.Decimal(10,3)  @default(0)
-  totalSum       Decimal           @map("total_sum")          @db.Decimal(10,3)  @default(0)
-  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(10,3)  @default(0)
+  price          Decimal           @map("price")              @db.Decimal(20,3)  @default(0)
+  totalSum       Decimal           @map("total_sum")          @db.Decimal(20,3)  @default(0)
+  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(20,3)  @default(0)
   description    String            @map("description")        @db.VarChar()      @default("")
   sellerId       String            @map("seller_id")          @db.Uuid
 
@@ -325,9 +325,9 @@ model OrderProduct {
 
   quantity       Int               @map("quantity")           @db.Integer        @default(1)
   sale           Int               @map("sale")               @db.Integer        @default(0)
-  totalSum       Decimal           @map("total_sum")          @db.Decimal(10,3)  @default(0)
-  price          Decimal           @map("price")              @db.Decimal(10,3)  @default(0)
-  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(10,3)  @default(0)
+  totalSum       Decimal           @map("total_sum")          @db.Decimal(20,3)  @default(0)
+  price          Decimal           @map("price")              @db.Decimal(20,3)  @default(0)
+  priceWithSale  Decimal           @map("price_with_sale")    @db.Decimal(20,3)  @default(0)
   description    String            @map("description")        @db.VarChar()      @default("")
   sellerId       String            @map("seller_id")          @db.Uuid
   orderId        String            @map("order_id")           @db.Uuid

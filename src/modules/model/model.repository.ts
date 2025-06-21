@@ -27,6 +27,7 @@ export class ModelRepository {
 		const models = await this.prisma.model.findMany({
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
+				furnitureTypeId: query.furnitureTypeId,
 				name: { contains: query.name, mode: 'insensitive' },
 			},
 			select: {
@@ -63,6 +64,7 @@ export class ModelRepository {
 		const modelCount = await this.prisma.model.count({
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
+				furnitureTypeId: query.furnitureTypeId,
 				name: { contains: query.name, mode: 'insensitive' },
 			},
 		})

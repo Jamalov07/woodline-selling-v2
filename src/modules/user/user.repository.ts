@@ -18,6 +18,7 @@ export class UserRepository {
 		const users = await this.prisma.user.findMany({
 			where: {
 				fullname: query.fullname,
+				phone: query.phone,
 				roles: { some: { name: { in: query.roleNames } } },
 				OR: [{ fullname: { contains: query.search, mode: 'insensitive' } }, { phone: { contains: query.search, mode: 'insensitive' } }],
 			},
@@ -65,6 +66,7 @@ export class UserRepository {
 		const usersCount = await this.prisma.user.count({
 			where: {
 				fullname: query.fullname,
+				phone: query.phone,
 				roles: { some: { name: { in: query.roleNames } } },
 				OR: [{ fullname: { contains: query.search, mode: 'insensitive' } }, { phone: { contains: query.search, mode: 'insensitive' } }],
 			},
