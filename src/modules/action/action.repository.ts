@@ -122,7 +122,16 @@ export class ActionRepository {
 		return action
 	}
 	async updateOne(query: ActionGetOneRequest, body: ActionUpdateOneRequest) {
-		const action = await this.prisma.action.update({ where: { id: query.id }, data: { description: body.description } })
+		const action = await this.prisma.action.update({
+			where: { id: query.id },
+			data: {
+				description: body.description,
+				roles: {
+					connect: body.rolesToConnect.map((r) => ({ name: r })),
+					disconnect: body.rolesToDisconnect.map((r) => ({ name: r })),
+				},
+			},
+		})
 
 		return action
 	}

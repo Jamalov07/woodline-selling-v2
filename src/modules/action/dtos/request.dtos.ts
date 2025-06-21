@@ -15,4 +15,6 @@ export class ActionGetManyRequestDto
 
 export class ActionGetOneRequestDto extends PickType(ActionRequiredDto, ['id']) implements ActionGetOneRequest {}
 
-export class ActionUpdateOneRequestDto extends PickType(ActionOptionalDto, ['description']) implements ActionUpdateOneRequest {}
+export class ActionUpdateOneRequestDto
+	extends IntersectionType(PickType(ActionOptionalDto, ['description']), PickType(RequestOtherFieldsDto, ['rolesToConnect', 'rolesToDisconnect']))
+	implements ActionUpdateOneRequest {}

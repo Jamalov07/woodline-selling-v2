@@ -9,4 +9,4 @@ export declare interface ActionGetManyRequest extends Pick<ActionOptional, 'name
 
 export declare interface ActionGetOneRequest extends Pick<ActionOptional, 'id' | 'description' | 'name' | 'method' | 'url'> {}
 
-export declare interface ActionUpdateOneRequest extends Pick<ActionOptional, 'description'> {}
+export declare interface ActionUpdateOneRequest extends Pick<ActionOptional, 'description'>, Pick<RequestOtherFields, 'rolesToConnect' | 'rolesToDisconnect'> {}
