@@ -29,14 +29,14 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@IsOptional()
 	method?: DeleteMethodEnum = DeleteMethodEnum.soft
 
-	@ApiProperty({ type: String, isArray: true })
+	@ApiPropertyOptional({ type: String, isArray: true })
 	@IsOptional()
 	@IsArray()
 	@IsEnum(RoleName, { each: true })
 	@ArrayUnique({ message: 'role names should be unique' })
 	rolesToConnect?: RoleName[] = []
 
-	@ApiProperty({ type: String, isArray: true })
+	@ApiPropertyOptional({ type: String, isArray: true })
 	@IsOptional()
 	@IsArray()
 	@IsEnum(RoleName, { each: true })
@@ -44,21 +44,21 @@ export class RequestOtherFieldsDto implements RequestOtherFields {
 	@ArrayUnique({ message: 'role names should be unique' })
 	roleNames?: RoleName[] = undefined
 
-	@ApiProperty({ type: String, isArray: true })
+	@ApiPropertyOptional({ type: String, isArray: true })
 	@IsOptional()
 	@IsArray()
 	@IsEnum(RoleName, { each: true })
 	@ArrayUnique({ message: 'role names should be unique' })
 	rolesToDisconnect?: RoleName[] = []
 
-	@ApiProperty({ type: String, isArray: true })
+	@ApiPropertyOptional({ type: String, isArray: true })
 	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })
 	@ArrayUnique({ message: 'UUIDs should be unique' })
 	actionsToConnect?: string[] = []
 
-	@ApiProperty({ type: String, isArray: true })
+	@ApiPropertyOptional({ type: String, isArray: true })
 	@IsOptional()
 	@IsArray()
 	@IsUUID('4', { each: true })

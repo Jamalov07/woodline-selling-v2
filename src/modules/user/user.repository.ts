@@ -140,7 +140,12 @@ export class UserRepository {
 					connect: (body.actionsToConnect ?? []).map((r) => ({ id: r })),
 					disconnect: (body.actionsToDisconnect ?? []).map((r) => ({ id: r })),
 				},
-				storehouse: { update: { storehouseId: body.storehouseId } },
+				storehouse: {
+					upsert: {
+						create: { storehouseId: body.storehouseId },
+						update: { storehouseId: body.storehouseId },
+					},
+				},
 			},
 		})
 
