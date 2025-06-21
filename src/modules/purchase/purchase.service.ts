@@ -38,10 +38,10 @@ export class PurchaseService {
 			? {
 					totalCount: purchasesCount,
 					pagesCount: Math.ceil(purchasesCount / query.pageSize),
-					pageSize: purchases.length,
-					data: purchases,
+					pageSize: mappedPurchases.length,
+					data: mappedPurchases,
 				}
-			: { data: purchases }
+			: { data: mappedPurchases }
 
 		return createResponse({ data: result, success: { messages: ['find many success'] } })
 	}
