@@ -27,6 +27,13 @@ export class PurchaseService {
 		const purchases = await this.purchaseRepository.findMany(query)
 		const purchasesCount = await this.purchaseRepository.countFindMany(query)
 
+		const mappedPurchases = purchases.map((p) => {
+			return {
+				...p,
+				productsCount: p.productMVs.reduce((a, b) => a + b.statuses.reduce((c, d) => c + d.quantity, 0), 0),
+			}
+		})
+
 		const result = query.pagination
 			? {
 					totalCount: purchasesCount,

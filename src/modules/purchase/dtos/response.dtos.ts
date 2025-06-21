@@ -3,7 +3,10 @@ import { PurchaseFindManyData, PurchaseFindManyResponse, PurchaseFindOneData, Pu
 import { GlobalModifyResponseDto, GlobalResponseDto, PaginationResponseDto } from '@common'
 import { PurchaseRequiredDto } from './fields.dtos'
 
-export class PurchaseFindOneDataDto extends PickType(PurchaseRequiredDto, ['id', 'status', 'createdAt']) implements PurchaseFindOneData {}
+export class PurchaseFindOneDataDto extends PickType(PurchaseRequiredDto, ['id', 'status', 'createdAt']) implements PurchaseFindOneData {
+	@ApiProperty({ type: Number })
+	productsCount?: number
+}
 
 export class PurchaseFindManyDataDto extends PaginationResponseDto implements PurchaseFindManyData {
 	@ApiProperty({ type: PurchaseFindOneDataDto, isArray: true })

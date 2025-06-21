@@ -7,7 +7,9 @@ export declare interface PurchaseFindManyResponse extends GlobalResponse {
 	data: PurchaseFindManyData
 }
 
-export declare interface PurchaseFindOneData extends Pick<PurchaseRequired, 'id' | 'status' | 'createdAt'> {}
+export declare interface PurchaseFindOneData extends Pick<PurchaseRequired, 'id' | 'status' | 'createdAt'> {
+	productsCount?: number
+}
 
 export declare interface PurchaseFindOneResponse extends GlobalResponse {
 	data: PurchaseFindOneData
