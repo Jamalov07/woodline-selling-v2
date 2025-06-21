@@ -31,6 +31,7 @@ export class ActionRepository {
 
 		const actions = await this.prisma.action.findMany({
 			where,
+			select: { id: true, name: true, url: true, description: true, method: true, createdAt: true, roles: true },
 			...paginationOptions,
 		})
 
@@ -67,6 +68,7 @@ export class ActionRepository {
 				name: { contains: query.name, mode: 'insensitive' },
 				description: { contains: query.description, mode: 'insensitive' },
 			},
+			select: { id: true, name: true, url: true, description: true, method: true, createdAt: true, roles: true },
 		})
 
 		return action
