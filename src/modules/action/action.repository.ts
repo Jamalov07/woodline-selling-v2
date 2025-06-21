@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import { ActionFindManyRequest, ActionFindOneRequest, ActionGetManyRequest, ActionGetOneRequest, ActionUpdateOneRequest } from './interfaces'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class ActionRepository {
@@ -14,15 +15,22 @@ export class ActionRepository {
 		if (query.pagination) {
 			paginationOptions = { take: query.pageSize, skip: (query.pageNumber - 1) * query.pageSize }
 		}
+		const where: Prisma.ActionWhereInput = {}
+
+		if (query.method) {
+			where.method = query.method
+		}
+
+		if (query.search) {
+			where.OR = [
+				{ url: { contains: query.search, mode: 'insensitive' } },
+				{ name: { contains: query.search, mode: 'insensitive' } },
+				{ description: { contains: query.search, mode: 'insensitive' } },
+			]
+		}
 
 		const actions = await this.prisma.action.findMany({
-			where: {
-				id: { in: query.ids },
-				method: query.method,
-				url: { contains: query.url, mode: 'insensitive' },
-				name: { contains: query.name, mode: 'insensitive' },
-				description: { contains: query.description, mode: 'insensitive' },
-			},
+			where,
 			...paginationOptions,
 		})
 
@@ -30,14 +38,21 @@ export class ActionRepository {
 	}
 
 	async countFindMany(query: ActionFindManyRequest) {
+		const where: Prisma.ActionWhereInput = {}
+
+		if (query.method) {
+			where.method = query.method
+		}
+
+		if (query.search) {
+			where.OR = [
+				{ url: { contains: query.search, mode: 'insensitive' } },
+				{ name: { contains: query.search, mode: 'insensitive' } },
+				{ description: { contains: query.search, mode: 'insensitive' } },
+			]
+		}
 		const actionsCount = await this.prisma.action.count({
-			where: {
-				id: { in: query.ids },
-				method: query.method,
-				url: { contains: query.url, mode: 'insensitive' },
-				name: { contains: query.name, mode: 'insensitive' },
-				description: { contains: query.description, mode: 'insensitive' },
-			},
+			where: where,
 		})
 
 		return actionsCount

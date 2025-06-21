@@ -32,7 +32,7 @@ export class RoleRepository implements OnModuleInit {
 			where: {
 				name: query.name,
 			},
-			select: { name: true, actions: { select: { id: true, name: true, method: true, description: true, url: true } } },
+			select: { name: true, actions: { select: { id: true, name: true, method: true, description: true, url: true, createdAt: true } } },
 		})
 
 		return role
