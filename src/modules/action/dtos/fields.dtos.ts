@@ -30,7 +30,7 @@ export class ActionOptionalDto extends DefaultOptionalFieldsDto implements Actio
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	name?: string = ''
+	name?: string
 
 	@ApiPropertyOptional({ enum: ActionMethod })
 	@IsOptional()
@@ -40,10 +40,10 @@ export class ActionOptionalDto extends DefaultOptionalFieldsDto implements Actio
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	url?: string = ''
+	url?: string
 
 	@ApiPropertyOptional({ type: String })
 	@IsOptional()
 	@IsString()
-	description?: string = ''
+	description?: string
 }
