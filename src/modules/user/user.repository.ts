@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import { UserCreateOneRequest, UserDeleteOneRequest, UserFindManyRequest, UserFindOneRequest, UserGetManyRequest, UserGetOneRequest, UserUpdateOneRequest } from './interfaces'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class UserRepository {
@@ -122,31 +123,36 @@ export class UserRepository {
 	}
 
 	async updateOne(query: UserGetOneRequest, body: UserUpdateOneRequest) {
+		const data: Prisma.UserUpdateInput = {
+			fullname: body.fullname,
+			password: body.password,
+			source: body.source,
+			balance: body.balance,
+			phone: body.phone,
+			token: body.token,
+			deletedAt: body.deletedAt,
+			roles: {
+				connect: (body.rolesToConnect ?? []).map((r) => ({ name: r })),
+				disconnect: (body.rolesToDisconnect ?? []).map((r) => ({ name: r })),
+			},
+			actions: {
+				connect: (body.actionsToConnect ?? []).map((r) => ({ id: r })),
+				disconnect: (body.actionsToDisconnect ?? []).map((r) => ({ id: r })),
+			},
+		}
+
+		if (body.storehouseId) {
+			data.storehouse = {
+				upsert: {
+					update: { storehouseId: body.storehouseId },
+					create: { storehouseId: body.storehouseId },
+				},
+			}
+		}
+
 		const user = await this.prisma.user.update({
 			where: { id: query.id },
-			data: {
-				fullname: body.fullname,
-				password: body.password,
-				source: body.source,
-				balance: body.balance,
-				phone: body.phone,
-				token: body.token,
-				deletedAt: body.deletedAt,
-				roles: {
-					connect: (body.rolesToConnect ?? []).map((r) => ({ name: r })),
-					disconnect: (body.rolesToDisconnect ?? []).map((r) => ({ name: r })),
-				},
-				actions: {
-					connect: (body.actionsToConnect ?? []).map((r) => ({ id: r })),
-					disconnect: (body.actionsToDisconnect ?? []).map((r) => ({ id: r })),
-				},
-				storehouse: {
-					upsert: {
-						create: { storehouseId: body.storehouseId },
-						update: { storehouseId: body.storehouseId },
-					},
-				},
-			},
+			data,
 		})
 
 		return user
