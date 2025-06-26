@@ -84,11 +84,11 @@ export class SPSBookingService {
 
 	async deleteOne(query: SPSBookingDeleteOneRequest) {
 		await this.getOne(query)
-		if (query.method === DeleteMethodEnum.hard) {
-			await this.spsBookingRepository.deleteOne(query)
-		} else {
-			await this.spsBookingRepository.updateOne(query, { deletedAt: new Date() })
-		}
+		// if (query.method === DeleteMethodEnum.hard) {
+		await this.spsBookingRepository.deleteOne(query)
+		// } else {
+		// await this.spsBookingRepository.updateOne(query, { deletedAt: new Date() })
+		// }
 		return createResponse({ data: null, success: { messages: ['delete one success'] } })
 	}
 }
