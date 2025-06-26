@@ -30,6 +30,13 @@ export class SPSBookingRepository {
 				spsId: query.spsId,
 				sellerId: query.sellerId,
 			},
+			select: {
+				id: true,
+				createdAt: true,
+				quantity: true,
+				seller: { select: { id: true, phone: true, fullname: true } },
+				sps: { select: { id: true, sp: { select: { storehouse: { select: { id: true, name: true, type: true } }, product: { select: { id: true, publicId: true } } } } } },
+			},
 			...paginationOptions,
 		})
 
@@ -40,6 +47,13 @@ export class SPSBookingRepository {
 		const spsBooking = await this.prisma.sPSBooking.findFirst({
 			where: {
 				id: query.id,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				quantity: true,
+				seller: { select: { id: true, phone: true, fullname: true } },
+				sps: { select: { id: true, sp: { select: { storehouse: { select: { id: true, name: true, type: true } }, product: { select: { id: true, publicId: true } } } } } },
 			},
 		})
 
