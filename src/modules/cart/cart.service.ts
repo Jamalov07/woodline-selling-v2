@@ -86,11 +86,11 @@ export class CartService {
 
 	async deleteOne(query: CartDeleteOneRequest) {
 		await this.getOne(query)
-		if (query.method === DeleteMethodEnum.hard) {
-			await this.cartRepository.deleteOne(query)
-		} else {
-			await this.cartRepository.updateOne(query, { deletedAt: new Date() })
-		}
+		// if (query.method === DeleteMethodEnum.hard) {
+		await this.cartRepository.deleteOne(query)
+		// } else {
+		// await this.cartRepository.updateOne(query, { deletedAt: new Date() })
+		// }
 		return createResponse({ data: null, success: { messages: ['delete one success'] } })
 	}
 
