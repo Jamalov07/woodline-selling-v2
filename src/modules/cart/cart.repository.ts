@@ -25,6 +25,7 @@ export class CartRepository {
 			},
 			select: {
 				id: true,
+				type: true,
 				createdAt: true,
 				description: true,
 				price: true,
@@ -70,6 +71,7 @@ export class CartRepository {
 			select: {
 				id: true,
 				createdAt: true,
+				type: true,
 				description: true,
 				price: true,
 				priceWithSale: true,
