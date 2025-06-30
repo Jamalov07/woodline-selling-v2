@@ -29,9 +29,9 @@ export class CartUpdateOneRequestDto
 {
 	@ApiProperty({ type: OmitType(ProductCreateOneRequestDto, ['description']) })
 	@ValidateNested()
-	@Type(() => OmitType(ProductCreateOneRequestDto, ['description']))
+	@Type(() => OmitType(ProductCreateOneRequestDto, ['description', 'publicId']))
 	@IsOptional()
-	productDetail?: Omit<ProductCreateOneRequest, 'description'>
+	productDetail?: Omit<ProductCreateOneRequest, 'description' | 'publicId'>
 }
 
 export class CartDeleteOneRequestDto extends IntersectionType(PickType(RequestOtherFieldsDto, ['isDeleted']), PickType(CartRequiredDto, ['id'])) implements CartDeleteOneRequest {}

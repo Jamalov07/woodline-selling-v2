@@ -17,7 +17,7 @@ export declare interface CartCreateOneRequest
 }
 
 export declare interface CartUpdateOneRequest extends Pick<CartOptional, 'quantity' | 'spsId' | 'deletedAt' | 'description' | 'price' | 'priceWithSale' | 'sale' | 'totalSum'> {
-	productDetail?: Omit<ProductCreateOneRequest, 'description'>
+	productDetail?: Omit<ProductCreateOneRequest, 'description' | 'publicId'>
 }
 
 export declare interface CartDeleteOneRequest extends Pick<CartOptional, 'id'>, Pick<RequestOtherFields, 'method'> {}
