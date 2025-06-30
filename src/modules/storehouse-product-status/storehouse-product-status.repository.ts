@@ -126,7 +126,8 @@ export class SPSRepository {
 			where: {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				spId: query.spId,
-				status: query.status,
+				status: query.status ?? { not: SPStatus.pending },
+				sp: { product: { type: { not: ProductType.nonstandart } } },
 			},
 		})
 
