@@ -10,7 +10,7 @@ import {
 	OrderProductUpdateOneRequest,
 } from './interfaces'
 import { deletedAtConverter } from '../../common'
-import { OrderProductStatus, OrderProductType, ProductMVStatus, ProductMVType, ProductType, SPStatus } from '@prisma/client'
+import { OrderProductStatus, OrderProductType, ProductType, SPStatus } from '@prisma/client'
 
 @Injectable()
 export class OrderProductRepository {
@@ -30,6 +30,7 @@ export class OrderProductRepository {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				sellerId: query.sellerId,
 				spsId: query.spsId,
+				sps: { sp: { product: { model: { providerId: query.providerId } } } },
 			},
 			select: {
 				id: true,
@@ -123,6 +124,7 @@ export class OrderProductRepository {
 				deletedAt: deletedAtConverter(query.isDeleted),
 				sellerId: query.sellerId,
 				spsId: query.spsId,
+				sps: { sp: { product: { model: { providerId: query.providerId } } } },
 			},
 		})
 

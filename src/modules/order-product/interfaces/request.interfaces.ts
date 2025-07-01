@@ -2,7 +2,9 @@ import { PaginationRequest, RequestOtherFields } from '../../../common'
 import { ProductCreateOneRequest } from '../../product'
 import { OrderProductOptional, OrderProductRequired } from './fields.interfaces'
 
-export declare interface OrderProductFindManyRequest extends PaginationRequest, Pick<OrderProductOptional, 'spsId' | 'sellerId'>, Pick<RequestOtherFields, 'isDeleted'> {}
+export declare interface OrderProductFindManyRequest extends PaginationRequest, Pick<OrderProductOptional, 'spsId' | 'sellerId'>, Pick<RequestOtherFields, 'isDeleted'> {
+	providerId?: string
+}
 
 export declare interface OrderProductFindOneRequest extends Pick<OrderProductRequired, 'id'> {}
 
