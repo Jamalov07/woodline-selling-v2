@@ -218,7 +218,7 @@ export class CartRepository {
 						tissue: body.productDetail.tissue,
 						modelId: body.productDetail.modelId,
 						quantity: body.productDetail.quantity,
-						SPs: { create: { storehouseId: model.provider.storehouse.storehouseId, statuses: { create: { status: SPStatus.pending } } } },
+						SPs: { create: { storehouseId: model.provider.storehouse.storehouseId, statuses: { create: { status: SPStatus.pending, quantity: body.quantity } } } },
 					},
 					select: { id: true, SPs: { select: { storehouseId: true, statuses: { select: { id: true, status: true } } } } },
 				})
