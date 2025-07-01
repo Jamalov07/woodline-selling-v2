@@ -191,6 +191,7 @@ export class SellingRepository {
 				where: { id: sell.orderProduct.spsId },
 			})
 
+			console.log(sps.quantity, sell.orderProduct.quantity)
 			if (sps.quantity < sell.orderProduct.quantity) {
 				throw new BadRequestException('product not enough to out')
 			} else {
