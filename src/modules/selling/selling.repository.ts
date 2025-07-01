@@ -38,6 +38,7 @@ export class SellingRepository {
 				orderProduct: {
 					select: {
 						id: true,
+						type: true,
 						createdAt: true,
 						quantity: true,
 						sps: {
@@ -83,6 +84,7 @@ export class SellingRepository {
 				orderProduct: {
 					select: {
 						id: true,
+						type: true,
 						createdAt: true,
 						quantity: true,
 						sps: {
