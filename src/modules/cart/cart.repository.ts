@@ -202,7 +202,7 @@ export class CartRepository {
 						data: {
 							productId: product.id,
 							storehouseId: model.provider.storehouse.storehouseId,
-							statuses: { create: { status: SPStatus.pending } },
+							statuses: { create: { status: SPStatus.pending, quantity: body.quantity } },
 						},
 						select: { statuses: true },
 					})
