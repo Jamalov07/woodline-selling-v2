@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../shared/prisma'
 import { SPSCreateOneRequest, SPSDeleteOneRequest, SPSFindManyRequest, SPSFindOneRequest, SPSGetManyRequest, SPSGetOneRequest, SPSUpdateOneRequest } from './interfaces'
 import { deletedAtConverter } from '../../common'
-import { ProductType, SPStatus } from '@prisma/client'
+import { OrderProductStatus, ProductType, SPStatus } from '@prisma/client'
 
 @Injectable()
 export class SPSRepository {
@@ -30,7 +30,7 @@ export class SPSRepository {
 				createdAt: true,
 				quantity: true,
 				status: true,
-				orderProducts: { select: { quantity: true, selling: true } },
+				orderProducts: { select: { quantity: true, selling: true }, where: { status: { in: [OrderProductStatus.new, OrderProductStatus.accepted] } } },
 				carts: { select: { id: true, quantity: true, seller: { select: { id: true, fullname: true, phone: true } } } },
 				bookings: {
 					select: {
@@ -81,6 +81,7 @@ export class SPSRepository {
 				createdAt: true,
 				quantity: true,
 				status: true,
+				orderProducts: { select: { quantity: true, selling: true }, where: { status: { in: [OrderProductStatus.new, OrderProductStatus.accepted] } } },
 				carts: { select: { id: true, quantity: true, seller: { select: { id: true, fullname: true, phone: true } } } },
 				bookings: {
 					select: {
